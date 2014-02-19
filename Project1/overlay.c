@@ -41,7 +41,8 @@ int main(int argc, char** argv)
 	/*check for correct number of arguments*/
 	if(argc != NUM_ARGUMENTS)
 	{
-		printf("error (overlay): incorrect # of command line arguments\n");
+		printf("error (overlay): incorrect # of command line \
+			arguments\n");
 		printf("overlay: expected format: ");
 		printf(ARGUMENT_FORMAT);
 		printf("\noverlay: exiting program\n");

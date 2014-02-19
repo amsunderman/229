@@ -3,10 +3,12 @@
 #define NUM_ARGUMENTS 4
 #define ARGUMENT_FORMAT "colorshift pic.simp out.simp pattern"
 
-/* Program used to convert .simp image to a colorshifted .simp image based off a pattern
+/* Program used to convert .simp image to a colorshifted .simp image based off 
+ * a pattern
  * @arg pic.simp: input simp file
  * @arg out.simp: simp file to write colorshifted image to
- * @arg pattern: pattern to use for color shift "RB" implies red to blue, blue to red
+ * @arg pattern: pattern to use for color shift "RB" implies red to blue, blue 
+ * to red
  * @ret int: 0 = operation success, -1 = error (accompanied by print statement)
  * @author Adam Sunderman
  * @modified 02/07/2014 */
@@ -49,7 +51,8 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (colorshift): error encountered (read_simp_file)\n");
+		printf("error (colorshift): error encountered \
+			(read_simp_file)\n");
 		printf("colorshift: exiting program\n");
 		return -1;
 	}
@@ -59,7 +62,8 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (colorshift): error encountered (simp_util colorshift)\n");
+		printf("error (colorshift): error encountered (simp_util \
+			colorshift)\n");
 		printf("colorshift: exiting program\n");
 		return -1;
 	}
