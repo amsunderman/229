@@ -1,0 +1,43 @@
+#!/bin/bash
+#script to use pyrite server to change simp image to bmp image
+
+USERNAME=asu1351
+PASSWORD=dakitty1
+LINUXDIR=/home/asu1351/229/Project1/
+PYRITEDIR=/home/class/asu1351/229/Project1/
+SCRIPT="cd ${PYRITEDIR}; ./bmp2simp $1 $2; exit"
+
+/usr/bin/expect <<EOD
+spawn scp ${LINUXDIR}$1 "${USERNAME}@pyrite.cs.iastate.edu:${PYRITEDIR}$1";
+        
+expect {
+        -re ".*es.*o.*" {
+                exp_send "yes\r"
+                exp_continue
+        }
+        -re ".*sword.*" {
+                exp_send "${PASSWORD}\r"
+                exp_continue
+        }
+}
+interact;
+EOD
+
+
+sshpass -p "${PASSWORD}" ssh -o StrictHostKeyChecking=no -l ${USERNAME} pyrite.cs.iastate.edu "${SCRIPT}"
+
+/usr/bin/expect <<EOD
+spawn scp "${USERNAME}@pyrite.cs.iastate.edu:${PYRITEDIR}$2" ${LINUXDIR}$2;
+	
+expect {
+	-re ".*es.*o.*" {
+		exp_send "yes\r"
+		exp_continue
+	}
+	-re ".*sword.*" {
+		exp_send "${PASSWORD}\r"
+		exp_continue
+	}
+}
+interact;
+EOD

@@ -1,0 +1,31 @@
+Author: Adam Sunderman
+NetID: asu1351
+
+Image Storing:For image storing, I created a .c and .h file entitled simp_util, this file had a  data structure 
+entitled simp_file. simp_file contains three unsigned integers to store width, height, and num_pixels. 
+It also contains a double pointer to a multi-dimensional array of pixels. each pixel is of type struct
+simp_pixel which simply stores four unsigned char values for RGBA values. Allocation of the simp_file 
+structure is expected to be done outside of simp_util while allocation for the multi-dimensional array
+of pixels is handled in the read_simp_data method inside of simp_util.c (responsible for converting a simp
+file into this data structure). Freeing of all memory allocated is handled with the simp_data_clear method
+inside of simp_util. This data structure is the structure manipulated in all of the methods in simp_util
+
+Assumptions:My program (specifically cropping and overlay) expects that the coordinate, width and height all be within
+the boundaries of the original base image. If not the program will terminate after informing the user of
+incorrect usage. The crop, bw, overlay, and colorshift are all very leniant on argument checking. They make
+sure that the correct amount of arguments are received, but after that it parses assuming the arguments are
+correct. However, detailed error checking is included in all of the simp_util methods that will handle multiple
+forms of incorrect usage of an executable (it checks all file-pointers and struct pointers ensuring that tye are
+not null as well as checking the num_pixels against number of RGBA values ensuring the simp file is properly
+formatted. Any errors result in a return of -1 as well as printing out the error status to the console. The
+main executables catch the -1 value and print out what simp_util method was trying to execute when the err was
+found.
+
+File Listing:
+simp_util.c: source file that contains methods to read, write, and manipulate simp data through the use of a
+	simp_file structure
+crop.c: source file for the executable crop. parses arguments and then calls simp_util.c's crop method
+bw.c: source file for the executable bw. parses arguments and then calls simp_util.c's bw method
+colorshift.c: source file for the executable colorshift. parses arguments and then calls simp_util.c's
+	colorshift method
+overlay.c: source file for the executable overlay. parses arguments and then calls simp_util.c's overlay method

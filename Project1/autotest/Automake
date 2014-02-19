@@ -1,0 +1,113 @@
+all:bwtest colorshifttest croptest overlaytest
+	@# thanks for looking at the make file
+	@# you won't find any tips here though... sorry
+	@# but so you know, the at sign keeps the command from being echo'd into the output
+	@# and pounds act as comments (like double slashes)
+	@# the more you know, right?
+
+clean:
+	rm -f autotest/out/*
+bwtest:
+	@echo BW test: Starry Night
+	@./bw autotest/bw/starrynight.simp autotest/out/starryBW.simp
+	@./compare autotest/out/starryBW.simp autotest/out/starryBW.simp
+	@echo #white space is nice
+	
+	@echo BW test: Mona Lisa
+	@./bw autotest/bw/monalisa.simp autotest/out/monaBW.simp
+	@./compare autotest/out/monaBW.simp autotest/bw/monaBW.simp
+	@echo
+	
+	@#stolee test
+	@echo BW test: OAG \(\"attached.simp\"\)
+	@./bw autotest/bw/attached.simp autotest/out/bw_attached.simp
+	@./compare autotest/bw/bw_attached.simp autotest/out/bw_attached.simp
+	@echo
+	
+colorshifttest:
+	@echo COLORSHIFT test: attached.simp RGB
+	@./colorshift autotest/colorshift/attached.simp autotest/out/shifted.simp RGB
+	@./compare autotest/colorshift/shifted.simp autotest/out/shifted.simp
+	@echo
+	
+	@echo COLORSHIFT test: attached.simp RBG
+	@./colorshift autotest/colorshift/attached.simp autotest/out/shifted2.simp RBG
+	@./compare autotest/colorshift/shifted2.simp autotest/out/shifted2.simp
+	@echo
+	
+	@echo COLORSHIFT test: attached.simp BG
+	@./colorshift autotest/colorshift/attached.simp autotest/out/shifted3.simp BG
+	@./compare autotest/colorshift/shifted3.simp autotest/out/shifted3.simp
+	@echo
+	
+	@echo COLORSHIFT test: Starry Night BRG
+	@./colorshift autotest/colorshift/starrynight.simp autotest/out/starrySHIFT.simp BRG
+	@./compare autotest/colorshift/starrySHIFT.simp autotest/out/starrySHIFT.simp
+	@echo
+	
+	@echo COLORSHIFT test: Mona Lisa GR
+	@./colorshift autotest/colorshift/monalisa.simp autotest/out/monaSHIFT.simp GR
+	@./compare autotest/colorshift/monaSHIFT.simp autotest/out/monaSHIFT.simp
+	@echo
+	
+	
+	
+	@# stolee tests \(keanu\)
+	@echo COLORSHIFT test: keanu.simp RGB
+	@./colorshift autotest/colorshift/keanu.simp autotest/out/keanurgb.simp RGB
+	@./compare autotest/colorshift/keanurgb.simp autotest/out/keanurgb.simp
+	@echo
+	
+	@echo COLORSHIFT test: keanu.simp RBG
+	@./colorshift autotest/colorshift/keanu.simp autotest/out/keanurbg.simp RBG
+	@./compare autotest/colorshift/keanurbg.simp autotest/out/keanurbg.simp
+	@echo
+	
+	@echo COLORSHIFT test: keanu.simp RG
+	@./colorshift autotest/colorshift/keanu.simp autotest/out/keanurg.simp RG
+	@./compare autotest/colorshift/keanurg.simp autotest/out/keanurg.simp
+	@echo
+	
+	@echo COLORSHIFT test: keanu.simp RB
+	@./colorshift autotest/colorshift/keanu.simp autotest/out/keanurb.simp RB
+	@./compare autotest/colorshift/keanurb.simp autotest/out/keanurb.simp
+	@echo
+	
+	@echo COLORSHIFT test: keanu.simp GB
+	@./colorshift autotest/colorshift/keanu.simp autotest/out/keanugb.simp GB
+	@./compare autotest/colorshift/keanugb.simp autotest/out/keanugb.simp
+	@echo
+	
+croptest:
+	@echo CROP test: Mona Lisa \(50 50 50 50\)
+	@./crop autotest/crop/monalisa.simp autotest/out/monaCROPPED.simp 50 50 50 50
+	@./compare autotest/crop/monaCROPPED.simp autotest/out/monaCROPPED.simp
+	@echo
+	
+	@echo CROP test: Starry Night \(80 20 50 10\)
+	@./crop autotest/crop/starrynight.simp autotest/out/starryCROPPED.simp 80 20 50 10
+	@./compare autotest/crop/starryCROPPED.simp autotest/out/starryCROPPED.simp
+	@echo
+	
+	
+	
+	@#stolee tests
+	@echo CROP test: Insanity Wolf \(150 112 220 290\)
+	@./crop autotest/crop/insanity.simp autotest/out/c_insanity.simp 150 112 220 290
+	@./compare autotest/crop/c_insanity.simp autotest/out/c_insanity.simp
+	@echo
+	
+overlaytest:
+	@echo OVERLAY test: Watermark \(attached.simp\)
+	@./overlay autotest/overlay/attached.simp autotest/overlay/watermarkProc.simp autotest/out/watermarkedOUT.simp 0 0
+	@./compare autotest/overlay/watermarkedOUT.simp autotest/out/watermarkedOUT.simp
+	@echo
+	
+	
+	@# stolee tests
+	@echo OVERLAY test: Insane Doge
+	@./overlay autotest/overlay/insanity.simp autotest/overlay/doge.simp autotest/out/insanedoge.simp 150 120
+	@./compare autotest/overlay/insanedoge.simp autotest/out/insanedoge.simp
+	@echo
+	
+	
