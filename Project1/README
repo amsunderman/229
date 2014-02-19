@@ -35,13 +35,13 @@ simp_util.c: source file that contains methods to read, write, and manipulate
 simp data through the use of a simp_file structure
 
 crop.c: source file for the executable crop. parses arguments and then calls 
-simp_util.c's crop method
+simp_util.c  crop method
 
 bw.c: source file for the executable bw. parses arguments and then calls 
-simp_util.c's bw method
+simp_util.c  bw method
 
 colorshift.c: source file for the executable colorshift. parses arguments and 
 then calls simp_util.c colorshift method
 
 overlay.c: source file for the executable overlay. parses arguments and then 
-calls simp_util.c's overlay method
+calls simp_util.c  overlay method
