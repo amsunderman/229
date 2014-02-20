@@ -27,7 +27,9 @@ struct pointers ensuring that tye are not null as well as checking the
 num_pixels against number of RGBA values ensuring the simp file is properly 
 formatted. Any errors result in a return of -1 as well as printing out the 
 error status to the console. The main executables catch the -1 value and print 
-out what simp_util method was trying to execute when the err was found.
+out what simp_util method was trying to execute when the err was found. Also
+my program will not crash if you put strings in integer arguments, it will
+interpret them as 0 and run the program.
 
 File Listing:
 
