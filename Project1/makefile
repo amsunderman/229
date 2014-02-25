@@ -10,7 +10,7 @@ CC=gcc
 CFLAGS=-ansi -pedantic
 
 #all executables
-ALL=crop bw colorshift overlay
+ALL=crop bw colorshift overlay meme
 
 all: $(ALL)
 
@@ -23,6 +23,8 @@ colorshift: colorshift.o simp_util.o
 	$(CC) $(CFLAGS) -o colorshift colorshift.o simp_util.o
 overlay: overlay.o simp_util.o
 	$(CC) $(CFLAGS) -o overlay overlay.o simp_util.o
+meme: meme.o meme_file_util.o
+	$(CC) $(CFLAGS) -o meme meme.o meme_file_util.o
 
 #object files
 crop.o: crop.c
@@ -33,13 +35,17 @@ colorshift.o: colorshift.c
 	$(CC) $(CFLAGS) -c colorshift.c
 overlay.o: overlay.c
 	$(CC) $(CFLAGS) -c overlay.c
+meme.o: meme.c
+	$(CC) $(CFLAGS) -c meme.c
 simp_util.o: simp_util.c simp_util.h
-	$(CC) $(CFLAGS) -c simp_util.c simp_util.h
+	$(CC) $(CFLAGS) -c simp_util.c
+meme_file_util.o: meme_file_util.c meme_file_util.h
+	$(CC) $(CFLAGS) -c meme_file_util.c
 
 #cleanup files
 #clean removes all execs as well as object files
 #while clean objects leaves execs
 cleanobjects:
-	rm -f *.o *.gch
+	rm -f *.o
 clean:
-	rm -f $(ALL) *.o *.gch
+	rm -f $(ALL) *.o
