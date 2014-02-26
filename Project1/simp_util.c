@@ -3,6 +3,8 @@
 /* Function used to read from file fp and store it in the simp_file structure 
  * simp_data. Function expects simp_data has already had memory allocated to 
  * store width, height, num_pixels and unsigned char ** pixels 
+ * @precondition struct simp_file * simp_data already has memory allocated
+ * @postcondition simp_data will have data stored from FILE * fp
  * @param FILE *fp: pointer to .simp file to read data from
  * @param struct simp_file * simp_data: pointer to simp_file data structure to 
  * insert data into
@@ -106,6 +108,8 @@ int read_simp_file(FILE * fp, struct simp_file * simp_data)
 
 /* Function used to write the data contained in the simp_data structure 
  * into FILE fp in .simp format
+ * @precondition: simp_data has memory allocated
+ * @postcondition: FILE * fp is written with data from simp_data
  * @param FILE * fp: file pointer that points to .simp file to write to
  * @param struct simp_file * simp_data: structer that contains simp data to 
  * write
@@ -177,6 +181,8 @@ int write_simp_file(FILE * fp, struct simp_file * simp_data)
 /* Function that modifies simp_data structure with new x,y coordinates and
  * width and height resulting in a cropped version of the structure saved in 
  * provided cropped simp_file structure
+ * @precondition simp_data and cropped already have memory allocated
+ * @postcondition cropped will be the cropped version of simp_data
  * @param struct simp_file * simp_data: structure to be manipulated
  * @param struct simp_file * cropped: structure to store cropped image
  * @param int x: x coordinate to be left most column of pixels
@@ -249,6 +255,8 @@ int crop(struct simp_file * simp_data, struct simp_file * cropped,
 }
 
 /* Function that modifies simp_data structure to contain all b/w pixels
+ * @precondition simp_data has memory allocated
+ * @postcondition simp_data will be a bw version of the data
  * @param struct simp_file * simp_data: structure to be manipulated
  * @ret int: 0 = operation success, 1 = error (accompanied by print statement)
  * @author Adam Sunderman
@@ -287,6 +295,8 @@ int bw(struct simp_file * simp_data)
 
 /* Function that applies color shift to simp_data structure according to
  * provided pattern
+ * @precondition simp_data has memory allocated for it
+ * @postcondition simp_data will be a colorshifted version of the simp data
  * @param struct simp_file * simp_data: structure to be manipulated
  * @param char * pattern: string that contains the pattern to apply to each 
  * pixel
@@ -377,6 +387,9 @@ int colorshift(struct simp_file * simp_data, char * pattern)
 
 /* Function used to overlay simp_data (overlay_data) over another simp_data
  * structure (simp_data) based off of the respective alpha values per pixel
+ * @precondition simp_data and overlay_data have memory allocated
+ * @postcondition simp_data will contain the original image with
+ * overlay_data overlaid at specified coordinates
  * @param struct simp_file * simp_data: simp_data to be base image
  * @param struct simp_file * overlay_data: simp_data to be overlaid on base 
  * image
@@ -494,6 +507,8 @@ void overlay_calculation(unsigned char * color_value1,
 }
 
 /* Function used to free memory associated with a simp_data structure
+ * @precondition simp_data has memory already allocated
+ * @postcondition simp_data no longer has memory allocated
  * @param struct simp_file * simp_data: structure with memory to be cleared
  * @ret int: 0 = operation success; 1 = error (accompanied by print statement)
  * @author Adam Sunderman
