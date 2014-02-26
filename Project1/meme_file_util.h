@@ -35,6 +35,7 @@ typedef struct font_struct
 	char* name;
 	struct simp_file * image; /*struct defined in simp_util.h*/
 	character * characters; /*character typedef'd above*/
+	int num_characters;
 }font;
 
 /*typedef'd structure to store the information for a specific test_id in a MEM
@@ -52,6 +53,7 @@ typedef struct meme_id_struct
 	char * name;
 	struct simp_file * image; /*struct defined in simp_util.h*/
 	text_id * locations; /*text_id typedef'd above*/
+	int num_locations;
 }meme_id;
 
 /*typedef'd structure to store the information collected from a MEM file*/
@@ -59,6 +61,8 @@ typedef struct meme_file_struct
 {
 	meme_id * memes; /*meme_id typedef'd above*/
 	font * fonts;
+	int num_memes;
+	int num_fonts;
 }meme_file;
 
 /*typedef'd structure to store the information collected from a ACT file*/
@@ -80,17 +84,17 @@ int read_act_file(FILE * fp, action_file * action_data);
 
 /*function used to return a text_id structure with name equal to the provided 
  * string text_id*/
-text_id find_text_id(meme_id * meme, char * text_id);
+text_id * find_text_id(meme_id * meme, char * text_id);
 
 /*Function used to return a meme_id structure with name equal to the provided
  * string meme_id*/
-meme_id find_meme_id(meme_file * meme_data, char * meme_id);
+meme_id * find_meme_id(meme_file * meme_data, char * meme_id);
 
 /*Function used to load font contained in the meme_data structure*/
-struct simp_file load_font();
+struct simp_file * load_font();
 
 /*Function used to load a simp_image into the simp_file structure defined in
  * simp_util.h from the meme_data structure*/
-struct simp_file load_meme();
+struct simp_file * load_meme();
 
 #endif
