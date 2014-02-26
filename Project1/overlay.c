@@ -83,7 +83,8 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("overlay: error encountered (simp_util overlay)\n");
+		printf("error (overlay): error encountered \
+			(simp_util overlay)\n");
 		printf("overlay: exiting program\n");
 		return -1;
 	}
@@ -94,7 +95,8 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("overlay: error encountered (write_simp_file)\n");
+		printf("error (overlay): error encountered \
+			(write_simp_file)\n");
 		printf("overlay: exiting program\n");
 		return -1;
 	}

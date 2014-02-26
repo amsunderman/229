@@ -89,22 +89,8 @@ int main(int argc, char** argv)
 	/*cleanup (free memory)*/
 	fclose(in_fp);
 	fclose(out_fp);
-
-	/*if simp_data doesn't free successfully program will still complete 
- 	* but report problem*/
-	if(simp_data_clear(simp_data) == -1)
-	{
-		printf("error (crop): error encountered (simp_data_clear)\n");
-		printf("crop: simp_data memory not successfully freed\n");
-	}
-
-	/*if cropped doesn't free successfully program will still complete but 
- 	* report problem*/
-	if(simp_data_clear(cropped) == -1)
-	{
-		printf("error (crop): error encountered (simp_data_clear)\n");
-		printf("crop: cropped memory not successfully freed\n");
-	}
+	simp_data_clear(simp_data);
+	simp_data_clear(simp_data);
 
 	/*return successfully*/
 	return 0;

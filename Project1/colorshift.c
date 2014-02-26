@@ -33,7 +33,8 @@ int main(int argc, char** argv)
 	/*check for correct number of arguments*/
 	if(argc != NUM_ARGUMENTS)
 	{
-		printf("colorshift: incorrect # of command line arguments\n");
+		printf("error (colorshift): incorrect # of command line \
+			arguments\n");
 		printf("colorshift: expected format: ");
 		printf(ARGUMENT_FORMAT);
 		printf("\n");
@@ -74,7 +75,8 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("colorshift: error encountered (write_simp_file)\n");
+		printf("error (colorshift): error encountered \
+		(write_simp_file)\n");
 		printf("colorshift: exiting program\n");
 		return -1;
 	}
