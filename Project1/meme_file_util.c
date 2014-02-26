@@ -1,5 +1,15 @@
 #include "meme_file_util.h"
 
+/** Function used to read data stored in MEM file and store it in the meme_file
+ * structure
+ * @precondition meme_file * meme_data has already had memory allocated
+ * @postcondition meme_data will be filled with data from fp FILE pointer
+ * @param FILE * fp: pointer to .mem file to read data from
+ * @param meme_file * meme_data: pointer to meme_file structure to insert data
+ * into
+ * @ret int: 0 = operation success, -1 = error (accompanied by print statement)
+ * @author Adam Sunderman
+ * @modified: 02/26/2014 */
 int read_mem_file(FILE * fp, meme_file * meme_data)
 {
 	/*general error checking*/
@@ -21,6 +31,16 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 	return 0;
 }
 
+/** Function used to read data stored in a ACT file and store it in the
+ * action_file structure
+ * @precondition action_file * action_data already has memory allocated
+ * @postcondition action_data will be filled with data from fp FILE pointer
+ * @param FILE * fp: pointer to .act file to read data from
+ * @param action_file * action_data: pointer to action_file structure to insert
+ * data into
+ * @ret int: 0 = operation success, -1 = error (accompanied by print statement)
+ * @author Adam Sunderman
+ * @modified: 02/26/2014 */
 int read_act_file(FILE * fp, action_file * action_data)
 {
 	/*general error checking*/
@@ -31,6 +51,15 @@ int read_act_file(FILE * fp, action_file * action_data)
 	return 0;
 }
 
+/** Function used to return a text_id structure with name equal to the provided
+ * string text_id
+ * @param meme_id * meme: meme_id structure to look for text_id structure in
+ * @param char * text_id: string that contains the name of a text_id structure
+ * @ret text_id *: returns a pointer to a text_id object with name = to the
+ * provided string. will return NULL if the text_id was not found or if an error
+ * was encountered
+ * @author: Adam Sunderman
+ * @modified: 02/26/2014 */
 text_id * find_text_id(meme_id * meme, char * text_id)
 {
 	/*counter*/
@@ -63,6 +92,16 @@ text_id * find_text_id(meme_id * meme, char * text_id)
 	return NULL;
 }
 
+/** Function used to return a meme_id structure with name equal to the provided
+ * string meme_id
+ * @param meme_file * meme_data: meme_file structure to look for meme_id
+ * structure
+ * @param char * meme_id: string that contains the name of a meme_id structure
+ * @ret meme_id *: returns a pointer to a meme_id object with name = to the
+ * provided string. will return NULL if the meme_id was not found or if an error
+ * was encountered
+ * @author: Adam Sunderman
+ * @modified 02/26/2014 */
 meme_id * find_meme_id(meme_file * meme_data, char * meme_id)
 {
 	/*counter*/
@@ -95,12 +134,14 @@ meme_id * find_meme_id(meme_file * meme_data, char * meme_id)
 	return NULL;
 }
 
+/**TODO*/
 struct simp_file * load_font()
 {
 	/*TODO*/
 	return NULL;
 }
 
+/**TODO*/
 struct simp_file * load_meme()
 {
 	/*TODO*/

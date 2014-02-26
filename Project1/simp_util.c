@@ -4,7 +4,7 @@
  * simp_data. Function expects simp_data has already had memory allocated to 
  * store width, height, num_pixels and unsigned char ** pixels 
  * @param FILE *fp: pointer to .simp file to read data from
- * @param struct simp_file * simp_data: pointer to simp_file data structer to 
+ * @param struct simp_file * simp_data: pointer to simp_file data structure to 
  * insert data into
  * @ret int: 0 = operation success, -1 = error (accompanied by print statement)
  * @author Adam Sunderman
