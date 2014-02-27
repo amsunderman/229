@@ -12,6 +12,15 @@
  * @modified: 02/26/2014 */
 int read_mem_file(FILE * fp, meme_file * meme_data)
 {
+	/*error value*/
+	int err;	
+
+	/*string to store current line*/
+	char * current_line;
+
+	/*size of current_line for getline function*/
+	size_t n = 0, current_length = 0;
+
 	/*general error checking*/
 	if(!fp)
 	{
@@ -25,7 +34,12 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		return -1;
 	}
 	
-	/*TODO*/
+	while((current_length = getline(&current_line, &n, fp)) > -1)
+	{
+		printf("%d %s", current_length, current_line);	
+	}
+
+	printf("%d\n", current_length);
 
 	/*return successfully*/
 	return 0;

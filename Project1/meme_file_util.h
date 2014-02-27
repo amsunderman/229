@@ -6,6 +6,10 @@
 #include <stdio.h>
 #endif
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #ifndef STRING
 #define STRING
 #include <string.h>
