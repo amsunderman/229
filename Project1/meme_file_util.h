@@ -86,6 +86,10 @@ int read_mem_file(FILE * fp, meme_file * meme_data);
  * action_file structure*/
 int read_act_file(FILE * fp, action_file * action_data);
 
+/*function used to parse an individual MEM file line and create necessary
+ * structures and data and insert it into meme_file * meme_data*/
+int mem_parse_line(char * left, char * right, meme_file * meme_data);
+
 /*function used to return a text_id structure with name equal to the provided 
  * string text_id*/
 text_id * find_text_id(meme_id * meme, char * text_id);

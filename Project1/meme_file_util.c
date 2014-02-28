@@ -1,6 +1,6 @@
 #include "meme_file_util.h"
 
-/** Function used to read data stored in MEM file and store it in the meme_file
+/**Function used to read data stored in MEM file and store it in the meme_file
  * structure
  * @precondition meme_file * meme_data has already had memory allocated
  * @postcondition meme_data will be filled with data from fp FILE pointer
@@ -9,14 +9,18 @@
  * into
  * @ret int: 0 = operation success, -1 = error (accompanied by print statement)
  * @author Adam Sunderman
- * @modified: 02/26/2014 */
+ * @modified: 02/28/2014 */
 int read_mem_file(FILE * fp, meme_file * meme_data)
 {
-	/*error value*/
-	int err;	
+	/*error value and counter*/
+	int err, i = 0;
 
 	/*string to store current line*/
 	char * current_line;
+
+	/*strings for each half of the line (before and after colon)*/
+	char * left;
+	char * right;
 
 	/*size of current_line for getline function*/
 	size_t n = 0, current_length = 0;
@@ -34,19 +38,58 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		return -1;
 	}
 
+	/*get first line*/
 	current_length = getline(&current_line, &n, fp);	
 
+	/*loop through all lines and tokenize them based off of the colon*/
 	while((int) current_length > -1)
 	{
-		/*TODO parse current line*/
+		/*NULL terminate the current line w/o new line character*/
+		current_line[current_length - 1] = '\0';
+
+		/*store sub string of current line (before colon)*/
+		left = strtok(current_line, ":");
+
+		/*if left is NULL then something went wrong*/
+		if(!left)
+		{
+			printf("read_mem_file: incorrect .mem file format\n");
+			return -1;
+		}
+
+		/*store sub string of current line (after colon)*/
+		right = strtok(NULL, ":");
+
+		/*if right is NULL then something went wrong*/
+		if(!right)
+		{
+			printf("read_mem_file: incorrect .mem file format\n");
+			return -1;
+		}
+
+		/*if there are any more tokens then the current line isn't
+ 		* valid formatting*/
+		if(strtok(NULL, ":"))
+		{
+			printf("read_mem_file: incorrect .mem file format\n");
+			return -1;
+		}
+
+		/*fill in MEM data into provided mem_data structure*/
+		mem_parse_line(left, right, meme_data);
+
+		/*move onto next line*/
 		current_length = getline(&current_line, &n, fp);
 	}
+
+	/*free current_line that was allocated with getline()*/
+	free(current_line);
 
 	/*return successfully*/
 	return 0;
 }
 
-/** Function used to read data stored in a ACT file and store it in the
+/**Function used to read data stored in a ACT file and store it in the
  * action_file structure
  * @precondition action_file * action_data already has memory allocated
  * @postcondition action_data will be filled with data from fp FILE pointer
@@ -66,7 +109,23 @@ int read_act_file(FILE * fp, action_file * action_data)
 	return 0;
 }
 
-/** Function used to return a text_id structure with name equal to the provided
+/**Function used to parse an individual MEM file line and create necessary
+ * structures and data to insert it into meme_file * meme_data
+ * @param char * left: left part of MEM file line (before colon)
+ * @param char * right: right part of MEM file line (after colon)
+ * @param meme_file * meme_data: meme_file structure to insert data into
+ * @ret int: 0 = operation success, -1 = error(accompanied by print statement)
+ * @author Adam Sunderman
+ * @modified 02/28/2014 */
+int mem_parse_line(char * left, char * right, meme_file * meme_data)
+{
+	/*TODO*/
+
+	/*return successfully*/
+	return 0;
+}
+
+/**Function used to return a text_id structure with name equal to the provided
  * string text_id
  * @param meme_id * meme: meme_id structure to look for text_id structure in
  * @param char * text_id: string that contains the name of a text_id structure
@@ -107,7 +166,7 @@ text_id * find_text_id(meme_id * meme, char * text_id)
 	return NULL;
 }
 
-/** Function used to return a meme_id structure with name equal to the provided
+/**Function used to return a meme_id structure with name equal to the provided
  * string meme_id
  * @param meme_file * meme_data: meme_file structure to look for meme_id
  * structure

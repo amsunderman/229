@@ -6,4 +6,7 @@ int main(int argc, char ** argv)
 	meme_file * meme_data = malloc(sizeof(meme_file));
 
 	read_mem_file(fp, meme_data);
+
+	fclose(fp);
+	free(meme_data);
 }
