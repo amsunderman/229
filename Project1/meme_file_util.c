@@ -18,6 +18,9 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 	/*string to store current line*/
 	char * current_line;
 
+	/*int to store the number of the current line*/
+	int line_count = 0;
+
 	/*strings for each half of the line (before and after colon)*/
 	char * left;
 	char * right;
@@ -39,7 +42,8 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 	}
 
 	/*get first line*/
-	current_length = getline(&current_line, &n, fp);	
+	current_length = getline(&current_line, &n, fp);
+	line_count++;
 
 	/*loop through all lines and tokenize them based off of the colon*/
 	while((int) current_length > -1)
@@ -53,7 +57,8 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		/*if left is NULL then something went wrong*/
 		if(!left)
 		{
-			printf("read_mem_file: incorrect .mem file format\n");
+			printf("read_mem_file: incorrect .mem file format in " 
+				"line %d\n", line_count);
 			return -1;
 		}
 
@@ -63,7 +68,8 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		/*if right is NULL then something went wrong*/
 		if(!right)
 		{
-			printf("read_mem_file: incorrect .mem file format\n");
+			printf("read_mem_file: incorrect .mem file format in " 
+				"line %d\n", line_count);
 			return -1;
 		}
 
@@ -71,15 +77,23 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
  		* valid formatting*/
 		if(strtok(NULL, ":"))
 		{
-			printf("read_mem_file: incorrect .mem file format\n");
+			printf("read_mem_file: incorrect .mem file format in " 
+				"line %d\n", line_count);
 			return -1;
 		}
 
 		/*fill in MEM data into provided mem_data structure*/
-		mem_parse_line(left, right, meme_data);
+		err = mem_parse_line(left, right, meme_data);
+
+		if(err)
+		{
+			printf("read_mem_file: incorrect .mem file format in "
+				"line %d\n", line_count);
+		}
 
 		/*move onto next line*/
 		current_length = getline(&current_line, &n, fp);
+		line_count++;
 	}
 
 	/*free current_line that was allocated with getline()*/

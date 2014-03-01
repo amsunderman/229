@@ -61,8 +61,8 @@ int read_simp_file(FILE * fp, struct simp_file * simp_data)
 	/*check if memory was successfully allocated for pixels*/
 	if(!simp_data->pixels)
 	{
-		printf("error (read_simp_file): failed to allocate memory for \
-			pixels\n");
+		printf("error (read_simp_file): failed to allocate memory for " 
+			"pixels\n");
 		return -1;
 	}
 	
@@ -76,8 +76,9 @@ int read_simp_file(FILE * fp, struct simp_file * simp_data)
  			* invalid*/
 			if(feof(fp))
 			{
-				printf("error (read_simp_file: file length did \
-					not match number of pixels expected\n");
+				printf("error (read_simp_file: file length " 
+					"did not match number of pixels " 
+					"expected\n");
 				return -1;
 			}
 			fread(&(simp_data->pixels[i][j].red_value), 
@@ -97,8 +98,8 @@ int read_simp_file(FILE * fp, struct simp_file * simp_data)
 	/*if we haven't found eof by this point than the .simp file is invalid*/
 	if(!feof(fp))
 	{
-		printf("error (read_simp_file): file length did not match \
-			number of pixels expected\n");
+		printf("error (read_simp_file): file length did not match " 
+			"number of pixels expected\n");
 		return -1;
 	}
 
@@ -136,16 +137,16 @@ int write_simp_file(FILE * fp, struct simp_file * simp_data)
 
 	if(!simp_data)
 	{
-		printf("error (write_simp_file): simp_data structure is \
-			null\n");
+		printf("error (write_simp_file): simp_data structure is " 
+			"null\n");
 		return -1;
 	}
 
 	if(simp_data->num_pixels != simp_data->height * simp_data->width)
 	{
-		printf("error (write_simp_file): simp_data structure contains \
-			a number of pixels that doesn't correlate to the width \
-			and height\n");
+		printf("error (write_simp_file): simp_data structure contains " 
+			"a number of pixels that doesn't correlate to the " 
+			"width and height\n");
 		return -1;
 	}
 
@@ -208,8 +209,8 @@ int crop(struct simp_file * simp_data, struct simp_file * cropped,
 	/*boundary error checking*/
 	if(x < 0 || y < 0)
 	{
-		printf("error (crop): x and y coordinates must be \
-			non-negative\n");
+		printf("error (crop): x and y coordinates must be " 
+			"non-negative\n");
 		return -1;
 	}
 
@@ -222,8 +223,8 @@ int crop(struct simp_file * simp_data, struct simp_file * cropped,
 	if(x + width > simp_data->width ||
 		y + height > simp_data->height)
 	{
-		printf("error (crop): cropping goes outside of image \
-			boundaries\n");
+		printf("error (crop): cropping goes outside of image " 
+			"boundaries\n");
 		return -1;
 	}
 
@@ -374,8 +375,8 @@ int colorshift(struct simp_file * simp_data, char * pattern)
 			}
 			else
 			{
-				printf("error (colorshift): unsupported \
-					pattern\n");
+				printf("error (colorshift): unsupported " 
+					"pattern\n");
 				return -1;
 			}
 		}
@@ -420,16 +421,16 @@ int overlay(struct simp_file * simp_data, struct simp_file * overlay_data,
 	/*boundary error checking*/
 	if(x < 0 || y < 0)
 	{
-		printf("error (overlay): x and y coordinates must be \
-			non-negative\n");
+		printf("error (overlay): x and y coordinates must be " 
+			"non-negative\n");
 		return -1;
 	}
 
 	if((x + overlay_data->width) > simp_data->width || 
 		(y + overlay_data->height) > simp_data->height)
 	{
-		printf("error (overlay): overlay image goes outside of base \
-			image boundaries\n");
+		printf("error (overlay): overlay image goes outside of base " 
+			"image boundaries\n");
 		return -1;
 	}
 
