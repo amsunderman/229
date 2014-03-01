@@ -7,7 +7,7 @@
 CC=gcc
 
 #options to pass to compiler
-CFLAGS=-ansi -pedantic
+CFLAGS=-ansi -pedantic -g
 
 #all executables
 ALL=crop bw colorshift overlay meme
