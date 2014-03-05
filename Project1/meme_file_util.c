@@ -126,6 +126,20 @@ int read_act_file(FILE * fp, action_file * action_data)
 	return 0;
 }
 
+/**Function used to read data stored in a FSF file and store it in a font
+ * structure
+ * @param char * fsf_file_name: name of fsf file to read from
+ * @ret font: font structure with all important info from fsf file
+ * @author Adam Sunderman
+ * @modified 03/05/2014*/
+font read_fsf_file(char * fsf_file_name)
+{
+	/*TODO*/
+	font default_return;
+	default_return.name = "NULL";
+	return default_return;
+}
+
 /**Function used to parse an individual MEM file line and create necessary
  * structures and data to insert it into meme_file * meme_data
  * @param char * left: left part of MEM file line (before colon)
@@ -215,18 +229,39 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 		right_tokens[j] = strtok(NULL, " ");
 	}
 
-	for(i = 0; i < left_num_tokens; i++)
+	/*is this line MEMES?*/
+	if((strcmp(left_tokens[0], "MEMES") == 0) && left_num_tokens == 1)
 	{
-		printf("%s/", left_tokens[i]);
-	}
-	printf("\n");
-	for(j = 0; j < right_num_tokens; j++)
-	{
-		printf("%s/", right_tokens[j]);
-	}
-	printf("\n\n");
+		/*allocate memory for meme id's*/
+		meme_data->memes = malloc(right_num_tokens * sizeof(meme_id));
 
-	/*use left tokens to determine line type*/
+		/*update num_memes for meme_file structure*/
+		meme_data->num_memes = right_num_tokens;
+
+		/*loop through right tokens and make meme_id's for them*/
+		for(i = 0; i < right_num_tokens; i++)
+		{
+			meme_data->memes[i].name = malloc(
+				strlen(right_tokens[i]) * sizeof(char));
+			strcpy(meme_data->memes[i].name, right_tokens[i]);
+		}
+	}
+
+	/*is this line FONTS?*/
+	if((strcmp(left_tokens[0], "FONTS") == 0) && left_num_tokens == 1)
+	{
+		/*allocate memory for fonts*/
+		meme_data->fonts = malloc(right_num_tokens * sizeof(font));
+
+		/*update num_fonts for meme file structure*/
+		meme_data->num_fonts = right_num_tokens;
+
+		/*loop through right tokens and make fonts for them*/
+		for(i = 0; i < right_num_tokens; i++)
+		{
+			meme_data->fonts[i] = read_fsf_file(right_tokens[i]);
+		}
+	}
 
 	/*TODO some other stuff*/
 
@@ -247,36 +282,40 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
  * was encountered
  * @author: Adam Sunderman
  * @modified: 02/26/2014 */
-text_id * find_text_id(meme_id * meme, char * text_id)
+text_id find_text_id(meme_id * meme, char * text_id_name)
 {
 	/*counter*/
 	int i;
+
+	/*default return text_id (represents failure)*/
+	text_id default_return;
+	default_return.name = "NULL";
 
 	/*general error checking*/
 	if(!meme)
 	{
 		printf("find_text_id: meme_id is null\n");
-		return NULL;
+		return default_return;
 	}
 
-	if(!text_id)
+	if(!text_id_name)
 	{
 		printf("text_id string is null\n");
-		return NULL;
+		return default_return;
 	}
 
 	/*look through locations within meme_id structure to find correct
  	* text_id structure and return it*/
 	for(i = 0; i < meme->num_locations; i++)
 	{
-		if(strcmp(text_id, meme->locations[i].name) == 0)
+		if(strcmp(text_id_name, meme->locations[i].name) == 0)
 		{
-			return &(meme->locations[i]);
+			return meme->locations[i];
 		}
 	}
 
 	/*if we didn't find it then it doesn't exist: return NULL*/
-	return NULL;
+	return default_return;
 }
 
 /**Function used to return a meme_id structure with name equal to the provided
@@ -289,36 +328,39 @@ text_id * find_text_id(meme_id * meme, char * text_id)
  * was encountered
  * @author: Adam Sunderman
  * @modified 02/26/2014 */
-meme_id * find_meme_id(meme_file * meme_data, char * meme_id)
+meme_id find_meme_id(meme_file * meme_data, char * meme_id_name)
 {
 	/*counter*/
 	int i;
+
+	/*default return meme_id (represents failure)*/
+	meme_id default_return;
+	default_return.name = "NULL";
 
 	/*general error checking*/
 	if(!meme_data)
 	{
 		printf("find_meme_id: meme_file structure is null\n");
-		return NULL;
+		return default_return;
 	}
 
-	if(!meme_id)
+	if(!meme_id_name)
 	{
 		printf("meme_id string is null\n");
-		return NULL;
+		return default_return;
 	}
 
 	/*look through meme_id's within meme_file structure to find correct
  	* meme_id structure and return it*/
 	for(i = 0; i < meme_data->num_memes; i++)
 	{
-		if(strcmp(meme_id, meme_data->memes[i].name) == 0)
+		if(strcmp(meme_id_name, meme_data->memes[i].name) == 0)
 		{
-			return &(meme_data->memes[i]);
+			return meme_data->memes[i];
 		}
 	}
-
 	/*if we didn't find it then it doesn't exist: return NULL*/
-	return NULL;
+	return default_return;
 }
 
 /**TODO*/

@@ -86,17 +86,21 @@ int read_mem_file(FILE * fp, meme_file * meme_data);
  * action_file structure*/
 int read_act_file(FILE * fp, action_file * action_data);
 
+/*function used to read data stored in a FSF file and store it in a font
+ * structure*/
+font read_fsf_file(char * fsf_file_name);
+
 /*function used to parse an individual MEM file line and create necessary
  * structures and data and insert it into meme_file * meme_data*/
 int mem_parse_line(char * left, char * right, meme_file * meme_data);
 
 /*function used to return a text_id structure with name equal to the provided 
  * string text_id*/
-text_id * find_text_id(meme_id * meme, char * text_id);
+text_id find_text_id(meme_id * meme, char * text_id);
 
 /*Function used to return a meme_id structure with name equal to the provided
  * string meme_id*/
-meme_id * find_meme_id(meme_file * meme_data, char * meme_id);
+meme_id find_meme_id(meme_file * meme_data, char * meme_id);
 
 /*Function used to load font contained in the meme_data structure*/
 struct simp_file * load_font();
