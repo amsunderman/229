@@ -54,18 +54,26 @@ int read_simp_file(FILE * fp, struct simp_file * simp_data)
 	simp_data->pixels = (struct simp_pixel **) malloc(
 		simp_data->height*sizeof(struct simp_pixel *));
 
-	for(i = 0; i < simp_data->height; i++)
-	{
-		simp_data->pixels[i] = (struct simp_pixel *) malloc(
-			simp_data->width * sizeof(struct simp_pixel));
-	}
-
 	/*check if memory was successfully allocated for pixels*/
 	if(!simp_data->pixels)
 	{
 		fprintf(stderr, "error (read_simp_file): failed to allocate " 
 			"memory for pixels\n");
 		return -1;
+	}
+
+	for(i = 0; i < simp_data->height; i++)
+	{
+		simp_data->pixels[i] = (struct simp_pixel *) malloc(
+			simp_data->width * sizeof(struct simp_pixel));
+
+		/*check if memory was successfully allocated for pixels[i]*/
+		if(!simp_data->pixels[i])
+		{
+			fprintf(stderr, "error (read_simp_file): failed to " 
+				"allocate memory for pixels[%d]", i);
+			return -1;
+		}
 	}
 	
 	/*loop through pixels and fill in date from binary file into simp_file 
@@ -240,10 +248,27 @@ int crop(struct simp_file * simp_data, struct simp_file * cropped,
 	cropped->pixels = (struct simp_pixel **) malloc(
 		height * sizeof(struct simp_pixel *));
 
+	/*check if memory was successfully allocated for pixels*/
+	if(!cropped->pixels)
+	{
+		fprintf(stderr, "error (crop): failed to allocate " 
+			"memory for cropped pixels\n");
+		return -1;
+	}
+
+	/*allocate memory for cropped pixels*/
 	for(i = 0; i < height; i++)
 	{
 		cropped->pixels[i] = (struct simp_pixel *) malloc(
 			width * sizeof(struct simp_pixel));
+
+		/*check if memory was successfully allocated for pixels[i]*/
+		if(!simp_data->pixels[i])
+		{
+			fprintf(stderr, "error (crop): failed to " 
+				"allocate memory for pixels[%d]", i);
+			return -1;
+		}
 	}
 
 	/*fill cropped image*/
