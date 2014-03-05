@@ -41,11 +41,11 @@ int main(int argc, char** argv)
 	/*check for correct number of arguments*/
 	if(argc != NUM_ARGUMENTS)
 	{
-		printf("error (overlay): incorrect # of command line " 
+		fprintf(stderr, "error (overlay): incorrect # of command line " 
 			"arguments\n");
-		printf("overlay: expected format: ");
-		printf(ARGUMENT_FORMAT);
-		printf("\noverlay: exiting program\n");
+		fprintf(stderr, "overlay: expected format: ");
+		fprintf(stderr, ARGUMENT_FORMAT);
+		fprintf(stderr, "\noverlay: exiting program\n");
 		return -1;
 	}
 
@@ -62,8 +62,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (overlay): error encountered (read_simp_file)\n");
-		printf("overlay: exiting program\n");
+		fprintf(stderr, "error (overlay): error encountered "
+			"(read_simp_file)\n");
+		fprintf(stderr, "overlay: exiting program\n");
 		return -1;
 	}
 
@@ -73,8 +74,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (overlay): error encountered (read_simp_file)\n");
-		printf("overlay: exiting program\n");
+		fprintf(stderr, "error (overlay): error encountered "
+			"(read_simp_file)\n");
+		fprintf(stderr, "overlay: exiting program\n");
 		return -1;
 	}
 
@@ -83,9 +85,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (overlay): error encountered " 
+		fprintf(stderr, "error (overlay): error encountered " 
 			"(simp_util overlay)\n");
-		printf("overlay: exiting program\n");
+		fprintf(stderr, "overlay: exiting program\n");
 		return -1;
 	}
 
@@ -95,9 +97,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (overlay): error encountered " 
+		fprintf(stderr, "error (overlay): error encountered " 
 			"(write_simp_file)\n");
-		printf("overlay: exiting program\n");
+		fprintf(stderr, "overlay: exiting program\n");
 		return -1;
 	}
 

@@ -25,13 +25,15 @@ int read_simp_file(FILE * fp, struct simp_file * simp_data)
 	/*General Error Checking*/
 	if(!fp)
 	{
-		printf("error (read_simp_file): .simp file pointer is null\n");
+		fprintf(stderr, "error (read_simp_file): .simp file pointer " 
+			"is null\n");
 		return -1;
 	}
 
 	if(!simp_data)
 	{
-		printf("error (read_simp_file): simp_data structure is null\n");
+		fprintf(stderr, "error (read_simp_file): simp_data structure " 
+			"is null\n");
 		return -1;
 	}
 
@@ -61,8 +63,8 @@ int read_simp_file(FILE * fp, struct simp_file * simp_data)
 	/*check if memory was successfully allocated for pixels*/
 	if(!simp_data->pixels)
 	{
-		printf("error (read_simp_file): failed to allocate memory for " 
-			"pixels\n");
+		fprintf(stderr, "error (read_simp_file): failed to allocate " 
+			"memory for pixels\n");
 		return -1;
 	}
 	
@@ -76,9 +78,9 @@ int read_simp_file(FILE * fp, struct simp_file * simp_data)
  			* invalid*/
 			if(feof(fp))
 			{
-				printf("error (read_simp_file: file length " 
-					"did not match number of pixels " 
-					"expected\n");
+				fprintf(stderr, "error (read_simp_file: file " 
+					"length did not match number of " 
+					"pixels expected\n");
 				return -1;
 			}
 			fread(&(simp_data->pixels[i][j].red_value), 
@@ -98,8 +100,8 @@ int read_simp_file(FILE * fp, struct simp_file * simp_data)
 	/*if we haven't found eof by this point than the .simp file is invalid*/
 	if(!feof(fp))
 	{
-		printf("error (read_simp_file): file length did not match " 
-			"number of pixels expected\n");
+		fprintf(stderr, "error (read_simp_file): file length did not " 
+			"match number of pixels expected\n");
 		return -1;
 	}
 
@@ -131,22 +133,23 @@ int write_simp_file(FILE * fp, struct simp_file * simp_data)
 	/*General Error Checking*/
 	if(!fp)
 	{
-		printf("error (write_simp_file): .simp file pointer is null\n");
+		fprintf(stderr, "error (write_simp_file): .simp file pointer " 
+			"is null\n");
 		return -1;
 	}
 
 	if(!simp_data)
 	{
-		printf("error (write_simp_file): simp_data structure is " 
-			"null\n");
+		fprintf(stderr, "error (write_simp_file): simp_data structure " 
+			"is null\n");
 		return -1;
 	}
 
 	if(simp_data->num_pixels != simp_data->height * simp_data->width)
 	{
-		printf("error (write_simp_file): simp_data structure contains " 
-			"a number of pixels that doesn't correlate to the " 
-			"width and height\n");
+		fprintf(stderr, "error (write_simp_file): simp_data structure " 
+			"contains a number of pixels that doesn't correlate " 
+			"to the width and height\n");
 		return -1;
 	}
 
@@ -202,28 +205,29 @@ int crop(struct simp_file * simp_data, struct simp_file * cropped,
 	/*general error checking*/
 	if(!simp_data)
 	{
-		printf("error (crop): simp_data structure is null\n");
+		fprintf(stderr, "error (crop): simp_data structure is null\n");
 		return -1;
 	}
 
 	/*boundary error checking*/
 	if(x < 0 || y < 0)
 	{
-		printf("error (crop): x and y coordinates must be " 
+		fprintf(stderr, "error (crop): x and y coordinates must be " 
 			"non-negative\n");
 		return -1;
 	}
 
 	if(width < 1 || height < 1)
 	{
-		printf("error (crop): width and height must be positive\n");
+		fprintf(stderr, "error (crop): width and height must be " 
+			"positive\n");
 		return -1;
 	}
 
 	if(x + width > simp_data->width ||
 		y + height > simp_data->height)
 	{
-		printf("error (crop): cropping goes outside of image " 
+		fprintf(stderr, "error (crop): cropping goes outside of image " 
 			"boundaries\n");
 		return -1;
 	}
@@ -271,7 +275,7 @@ int bw(struct simp_file * simp_data)
 	/*general error checking*/
 	if(!simp_data)
 	{
-		printf("error (bw): simp data structure is null\n");
+		fprintf(stderr, "error (bw): simp data structure is null\n");
 		return -1;
 	}
 
@@ -315,7 +319,8 @@ int colorshift(struct simp_file * simp_data, char * pattern)
 	/*general error checking*/
 	if(!simp_data)
 	{
-		printf("error (colorshift): simp_data structure is null\n");
+		fprintf(stderr, "error (colorshift): simp_data structure is " 
+			"null\n");
 		return -1;
 	}
 
@@ -375,8 +380,8 @@ int colorshift(struct simp_file * simp_data, char * pattern)
 			}
 			else
 			{
-				printf("error (colorshift): unsupported " 
-					"pattern\n");
+				fprintf(stderr, "error (colorshift): " 
+					"unsupported pattern\n");
 				return -1;
 			}
 		}
@@ -408,20 +413,22 @@ int overlay(struct simp_file * simp_data, struct simp_file * overlay_data,
 	/*general error checking*/
 	if(!simp_data)
 	{
-		printf("error (overlay): simp_data structure is null\n");
+		fprintf(stderr, "error (overlay): simp_data structure is " 
+			"null\n");
 		return -1;
 	}
 
 	if(!overlay_data)
 	{
-		printf("error (overlay): overlay_data structure is null\n");
+		fprintf(stderr, "error (overlay): overlay_data structure is " 
+			"null\n");
 		return -1;
 	}
 
 	/*boundary error checking*/
 	if(x < 0 || y < 0)
 	{
-		printf("error (overlay): x and y coordinates must be " 
+		fprintf(stderr, "error (overlay): x and y coordinates must be " 
 			"non-negative\n");
 		return -1;
 	}
@@ -429,8 +436,8 @@ int overlay(struct simp_file * simp_data, struct simp_file * overlay_data,
 	if((x + overlay_data->width) > simp_data->width || 
 		(y + overlay_data->height) > simp_data->height)
 	{
-		printf("error (overlay): overlay image goes outside of base " 
-			"image boundaries\n");
+		fprintf(stderr, "error (overlay): overlay image goes outside " 
+			"of base image boundaries\n");
 		return -1;
 	}
 
@@ -522,7 +529,7 @@ int simp_data_clear(struct simp_file * simp_data)
 	/*if simp_data is null we cannot free it*/
 	if(!simp_data)
 	{
-		printf("simp_data_clear: simp_data is null\n");
+		fprintf(stderr, "simp_data_clear: simp_data is null\n");
 		return -1;
 	}
 
@@ -532,7 +539,8 @@ int simp_data_clear(struct simp_file * simp_data)
 		/*if a row is null we cannot free*/
 		if(!simp_data->pixels[i])
 		{
-			printf("simp_data_clear: simp_data pixels are null\n");
+			fprintf(stderr, "simp_data_clear: simp_data pixels " 
+				"are null\n");
 			return -1;
 		}
 		free(simp_data->pixels[i]);

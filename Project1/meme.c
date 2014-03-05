@@ -24,10 +24,11 @@ int main(int argc, char ** argv)
 	/*check for correct number of arguments*/
 	if(argc != NUM_ARGUMENTS)
 	{
-		printf("error (meme): incorrect # of command line arguments\n");
-		printf("meme: expected format: ");
-		printf(ARGUMENT_FORMAT);
-		printf("\nmeme: exiting program\n");
+		fprintf(stderr, "error (meme): incorrect # of command line " 
+			"arguments\n");
+		fprintf(stderr, "meme: expected format: ");
+		fprintf(stderr, ARGUMENT_FORMAT);
+		fprintf(stderr, "\nmeme: exiting program\n");
 		return -1;
 	}
 
@@ -40,8 +41,9 @@ int main(int argc, char ** argv)
 
 	if(err)
 	{
-		printf("error (meme): error encountered (read_mem_file)\n");
-		printf("meme: exiting program\n");
+		fprintf(stderr, "error (meme): error encountered " 
+			"(read_mem_file)\n");
+		fprintf(stderr, "meme: exiting program\n");
 		return -1;
 	}
 
@@ -50,8 +52,9 @@ int main(int argc, char ** argv)
 
 	if(err)
 	{
-		printf("error (meme): error encountered (read_act_file)\n");
-		printf("meme: exiting program\n");
+		fprintf(stderr, "error (meme): error encountered " 
+			"(read_act_file)\n");
+		fprintf(stderr, "meme: exiting program\n");
 		return -1;
 	}
 

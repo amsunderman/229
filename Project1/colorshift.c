@@ -33,11 +33,11 @@ int main(int argc, char** argv)
 	/*check for correct number of arguments*/
 	if(argc != NUM_ARGUMENTS)
 	{
-		printf("error (colorshift): incorrect # of command line " 
-			"arguments\n");
-		printf("colorshift: expected format: ");
-		printf(ARGUMENT_FORMAT);
-		printf("\n");
+		fprintf(stderr, "error (colorshift): incorrect # of command " 
+			"line arguments\n");
+		fprintf(stderr, "colorshift: expected format: ");
+		fprintf(stderr, ARGUMENT_FORMAT);
+		fprintf(stderr, "\n");
 		return -1;
 	}
 
@@ -52,9 +52,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (colorshift): error encountered " 
+		fprintf(stderr, "error (colorshift): error encountered " 
 			"(read_simp_file)\n");
-		printf("colorshift: exiting program\n");
+		fprintf(stderr, "colorshift: exiting program\n");
 		return -1;
 	}
 
@@ -63,9 +63,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (colorshift): error encountered (simp_util " 
-			"colorshift)\n");
-		printf("colorshift: exiting program\n");
+		fprintf(stderr, "error (colorshift): error encountered " 
+			"(simp_util colorshift)\n");
+		fprintf(stderr, "colorshift: exiting program\n");
 		return -1;
 	}
 
@@ -75,9 +75,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (colorshift): error encountered " 
+		fprintf(stderr, "error (colorshift): error encountered " 
 		"(write_simp_file)\n");
-		printf("colorshift: exiting program\n");
+		fprintf(stderr, "colorshift: exiting program\n");
 		return -1;
 	}
 

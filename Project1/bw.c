@@ -27,10 +27,11 @@ int main(int argc, char** argv)
 	/*check for correct number of arguments*/
 	if(argc != NUM_ARGUMENTS)
 	{
-		printf("error (bw): incorrect # of command line arguments\n");
-		printf("bw: expected format: ");
-		printf(ARGUMENT_FORMAT);
-		printf("\nbw: exiting program\n");
+		fprintf(stderr, "error (bw): incorrect # of command line " 
+			"arguments\n");
+		fprintf(stderr, "bw: expected format: ");
+		fprintf(stderr, ARGUMENT_FORMAT);
+		fprintf(stderr, "\nbw: exiting program\n");
 		return -1;
 	}
 
@@ -44,8 +45,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (bw): error encountered (read_simp_file)\n");
-		printf("bw: exiting program\n");
+		fprintf(stderr, "error (bw): error encountered " 
+			"(read_simp_file)\n");
+		fprintf(stderr, "bw: exiting program\n");
 		return -1;
 	}
 
@@ -54,8 +56,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (bw): error encountered (simp_util bw)\n");
-		printf("bw: exiting program\n");
+		fprintf(stderr, "error (bw): error encountered " 
+			"(simp_util bw)\n");
+		fprintf(stderr, "bw: exiting program\n");
 		return -1;
 	}
 
@@ -65,8 +68,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (bw): error encountered (write_simp_file)\n");
-		printf("bw: exiting program\n");
+		fprintf(stderr, "error (bw): error encountered " 
+			"(write_simp_file)\n");
+		fprintf(stderr, "bw: exiting program\n");
 		return -1;
 	}
 

@@ -39,10 +39,11 @@ int main(int argc, char** argv)
 	/*check for correct number of arguments*/
 	if(argc != NUM_ARGUMENTS)
 	{
-		printf("error (crop): incorrect # of command line arguments\n");
-		printf("crop: expected format: ");
-		printf(ARGUMENT_FORMAT);
-		printf("\ncrop: exiting program\n");
+		fprintf(stderr, "error (crop): incorrect # of command line " 
+			"arguments\n");
+		fprintf(stderr, "crop: expected format: ");
+		fprintf(stderr, ARGUMENT_FORMAT);
+		fprintf(stderr, "\ncrop: exiting program\n");
 		return -1;
 	}
 
@@ -60,8 +61,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (crop): error encountered (read_simp_file)\n");
-		printf("crop: exiting program\n");
+		fprintf(stderr, "error (crop): error encountered " 
+			"(read_simp_file)\n");
+		fprintf(stderr, "crop: exiting program\n");
 		return -1;
 	}
 
@@ -70,8 +72,9 @@ int main(int argc, char** argv)
 
 	if(err)
 	{
-		printf("error (crop): error encountered (simp_util crop)\n");
-		printf("crop: exiting program\n");
+		fprintf(stderr, "error (crop): error encountered " 
+			"(simp_util crop)\n");
+		fprintf(stderr, "crop: exiting program\n");
 		return -1;
 	}
 
@@ -81,8 +84,9 @@ int main(int argc, char** argv)
 	
 	if(err)
 	{
-		printf("error (crop): error encountered (write_simp_file)\n");
-		printf("crop: exiting program\n");
+		fprintf(stderr, "error (crop): error encountered " 
+			"(write_simp_file)\n");
+		fprintf(stderr, "crop: exiting program\n");
 		return -1;
 	}
 

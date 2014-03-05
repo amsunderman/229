@@ -34,13 +34,13 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 	/*general error checking*/
 	if(!fp)
 	{
-		printf("read_mem_file: file pointer is null\n");
+		fprintf(stderr, "read_mem_file: file pointer is null\n");
 		return -1;
 	}
 
 	if(!meme_data)
 	{
-		printf("read_mem_file: meme_data is null\n");
+		fprintf(stderr, "read_mem_file: meme_data is null\n");
 		return -1;
 	}
 
@@ -60,8 +60,8 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		/*if left is NULL then something went wrong*/
 		if(!left)
 		{
-			printf("read_mem_file: incorrect .mem file format in " 
-				"line %d\n", line_count);
+			fprintf(stderr, "read_mem_file: incorrect .mem file " 
+				"format in line %d\n", line_count);
 			return -1;
 		}
 
@@ -71,8 +71,8 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		/*if right is NULL then something went wrong*/
 		if(!right)
 		{
-			printf("read_mem_file: incorrect .mem file format in " 
-				"line %d\n", line_count);
+			fprintf(stderr, "read_mem_file: incorrect .mem file " 
+				"format in line %d\n", line_count);
 			return -1;
 		}
 
@@ -80,8 +80,8 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
  		* valid formatting*/
 		if(strtok(NULL, ":"))
 		{
-			printf("read_mem_file: incorrect .mem file format in " 
-				"line %d\n", line_count);
+			fprintf(stderr, "read_mem_file: incorrect .mem file " 
+				"format in line %d\n", line_count);
 			return -1;
 		}
 
@@ -90,8 +90,8 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 
 		if(err)
 		{
-			printf("read_mem_file: incorrect .mem file format in "
-				"line %d\n", line_count);
+			fprintf(stderr, "read_mem_file: incorrect .mem file " 
+				"format in line %d\n", line_count);
 		}
 
 		/*move onto next line*/
@@ -134,9 +134,25 @@ int read_act_file(FILE * fp, action_file * action_data)
  * @modified 03/05/2014*/
 font read_fsf_file(char * fsf_file_name)
 {
-	/*TODO*/
+	/*File pointer to fsf file*/
+	FILE * fp;
+
+	/*counter*/
+	int i;
+
+	/*default return value (represents failure*/
 	font default_return;
 	default_return.name = "NULL";
+
+	/*open fsf file*/
+	fp = fopen(fsf_file_name, "r+");
+
+	if(!fp)
+	{
+		/*TODO*/
+	}
+
+	/*failure*/
 	return default_return;
 }
 
@@ -188,8 +204,8 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 				sizeof(char*));
 			if(!temp)
 			{
-				printf("mem_parse_line: failed to allocate " 
-					"memory\n");
+				fprintf(stderr, "mem_parse_line: failed to " 
+					"allocate memory\n");
 				return -1;
 			}
 			left_tokens = temp;
@@ -218,8 +234,8 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 				sizeof(char*));
 			if(!temp)
 			{
-				printf("mem_parse_line: failed to allocate " 
-				"memory\n");
+				fprintf(stderr, "mem_parse_line: failed to " 
+					"allocate memory\n");
 				return -1;
 			}
 			right_tokens = temp;
@@ -294,13 +310,13 @@ text_id find_text_id(meme_id * meme, char * text_id_name)
 	/*general error checking*/
 	if(!meme)
 	{
-		printf("find_text_id: meme_id is null\n");
+		fprintf(stderr, "find_text_id: meme_id is null\n");
 		return default_return;
 	}
 
 	if(!text_id_name)
 	{
-		printf("text_id string is null\n");
+		fprintf(stderr, "text_id string is null\n");
 		return default_return;
 	}
 
@@ -340,13 +356,13 @@ meme_id find_meme_id(meme_file * meme_data, char * meme_id_name)
 	/*general error checking*/
 	if(!meme_data)
 	{
-		printf("find_meme_id: meme_file structure is null\n");
+		fprintf(stderr, "find_meme_id: meme_file structure is null\n");
 		return default_return;
 	}
 
 	if(!meme_id_name)
 	{
-		printf("meme_id string is null\n");
+		fprintf(stderr, "meme_id string is null\n");
 		return default_return;
 	}
 
