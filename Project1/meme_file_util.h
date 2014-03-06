@@ -37,7 +37,7 @@ typedef struct character_struct
 typedef struct font_struct
 {
 	char* name;
-	struct simp_file * image; /*struct defined in simp_util.h*/
+	char * image;
 	character * characters; /*character typedef'd above*/
 	int num_characters;
 }font;
@@ -55,7 +55,7 @@ typedef struct text_id_struct
 typedef struct meme_id_struct
 {
 	char * name;
-	struct simp_file * image; /*struct defined in simp_util.h*/
+	char * image;
 	text_id * locations; /*text_id typedef'd above*/
 	int num_locations;
 }meme_id;

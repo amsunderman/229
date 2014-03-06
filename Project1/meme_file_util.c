@@ -257,6 +257,9 @@ font read_fsf_file(char * fsf_file_name)
 		}
 	}
 
+	/*close fsf file*/
+	fclose(fp);
+
 	/*return successfully*/
 	return ret;
 }
@@ -385,6 +388,44 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	/*tokenize line*/
 	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
 		&right_num_tokens);
+
+	/*is it NAME?*/
+	if(strcmp(left_tokens[0], "NAME") == 0 && left_num_tokens == 1)
+	{
+		/*There should only be one right_token*/
+		if(right_num_tokens != 1)
+		{
+			fprintf(stderr, "error (fsf_parse_line): incorrect " 
+				"format for NAME\n");
+			return -1;
+		}
+		/*else save font name*/
+		else
+		{
+			font_data->name = malloc(strlen(right_tokens[0]) * 
+				sizeof(char));
+			strcpy(font_data->name, right_tokens[0]);
+		}
+	}
+
+	/*is it IMAGE*/
+	if(strcmp(right_tokens[0], "IMAGE") == 0 && left_num_tokens == 1)
+	{
+		/*There should only be one right_token*/
+		if(right_num_tokens != 1)
+		{
+			fprintf(stderr, "error (fsf_parse_line): incorrect " 
+				"format for IMAGE\n");
+			return -1;
+		}
+		/*else save font image*/
+		else
+		{
+			font_data->image = malloc(strlen(right_tokens[0]) * 
+				sizeof(char));
+			strcpy(font_data->name, right_tokens[0]);
+		}
+	}
 
 	/*TODO some other stuff*/
 

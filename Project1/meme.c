@@ -62,6 +62,8 @@ int main(int argc, char ** argv)
 	meme_id ret = find_meme_id(meme_data, "KEANU");
 	printf("%s\n", ret.name);
 
+	printf("%s %s\n", meme_data->fonts[0].name, meme_data->fonts[0].image);
+
 	/*TODO execute actions*/
 
 	/*return successfully*/
