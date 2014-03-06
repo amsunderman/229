@@ -54,14 +54,20 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		/*NULL terminate the current line w/o new line character*/
 		current_line[current_length - 1] = '\0';
 
+		/*break if we are on a blank line*/
+		if(strlen(current_line) == 0)
+		{
+			break;
+		}
+
 		/*store sub string of current line (before colon)*/
 		left = strtok(current_line, ":");
 
 		/*if left is NULL then something went wrong*/
 		if(!left)
 		{
-			fprintf(stderr, "read_mem_file: incorrect .mem file " 
-				"format in line %d\n", line_count);
+			fprintf(stderr, "error (read_mem_file): incorrect " 
+				".mem file format in line %d\n", line_count);
 			return -1;
 		}
 
@@ -71,8 +77,8 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		/*if right is NULL then something went wrong*/
 		if(!right)
 		{
-			fprintf(stderr, "read_mem_file: incorrect .mem file " 
-				"format in line %d\n", line_count);
+			fprintf(stderr, "error (read_mem_file): incorrect " 
+				" .mem file format in line %d\n", line_count);
 			return -1;
 		}
 
@@ -80,8 +86,8 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
  		* valid formatting*/
 		if(strtok(NULL, ":"))
 		{
-			fprintf(stderr, "read_mem_file: incorrect .mem file " 
-				"format in line %d\n", line_count);
+			fprintf(stderr, "error (read_mem_file): incorrect " 
+				".mem file format in line %d\n", line_count);
 			return -1;
 		}
 
@@ -90,8 +96,9 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 
 		if(err)
 		{
-			fprintf(stderr, "read_mem_file: incorrect .mem file " 
-				"format in line %d\n", line_count);
+			fprintf(stderr, "error (read_mem_file): error "
+				"encountered (mem_parse_line)");
+			return -1;
 		}
 
 		/*move onto next line*/
@@ -129,7 +136,8 @@ int read_act_file(FILE * fp, action_file * action_data)
 /**Function used to read data stored in a FSF file and store it in a font
  * structure
  * @param char * fsf_file_name: name of fsf file to read from
- * @ret font: font structure with all important info from fsf file
+ * @ret font: font structure with all important info from fsf file will be
+ * a default return (name = NULL) if operation failure
  * @author Adam Sunderman
  * @modified 03/05/2014*/
 font read_fsf_file(char * fsf_file_name)
@@ -140,13 +148,16 @@ font read_fsf_file(char * fsf_file_name)
 	/*counter*/
 	int i;
 
-	/*default return value (represents failure*/
+	/*default return value (represents failure)*/
 	font default_return;
+
+	/*NULL name represents failure*/
 	default_return.name = "NULL";
 
 	/*open fsf file*/
 	fp = fopen(fsf_file_name, "r+");
 
+	/*did file open correctly*/
 	if(!fp)
 	{
 		/*TODO*/
@@ -324,11 +335,11 @@ int tokenize_line(char * left, char * right, char ** left_tokens,
  * string text_id
  * @param meme_id * meme: meme_id structure to look for text_id structure in
  * @param char * text_id: string that contains the name of a text_id structure
- * @ret text_id *: returns a pointer to a text_id object with name = to the
- * provided string. will return NULL if the text_id was not found or if an error
- * was encountered
+ * @ret text_id: returns a text_id object with name = to the provided string. 
+ * will return default_return (name = NULL)  if the text_id was not found or if 
+ * an error was encountered
  * @author: Adam Sunderman
- * @modified: 02/26/2014 */
+ * @modified: 03/05/2014 */
 text_id find_text_id(meme_id * meme, char * text_id_name)
 {
 	/*counter*/
@@ -370,11 +381,11 @@ text_id find_text_id(meme_id * meme, char * text_id_name)
  * @param meme_file * meme_data: meme_file structure to look for meme_id
  * structure
  * @param char * meme_id: string that contains the name of a meme_id structure
- * @ret meme_id *: returns a pointer to a meme_id object with name = to the
- * provided string. will return NULL if the meme_id was not found or if an error
- * was encountered
+ * @ret meme_id: returns a meme_id object with name = to the provided string. 
+ * will return default_return (name = NULL) if the meme_id was not found or if 
+ * an error was encountered
  * @author: Adam Sunderman
- * @modified 02/26/2014 */
+ * @modified 03/05/2014 */
 meme_id find_meme_id(meme_file * meme_data, char * meme_id_name)
 {
 	/*counter*/
