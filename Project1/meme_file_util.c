@@ -54,56 +54,63 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		/*NULL terminate the current line w/o new line character*/
 		current_line[current_length - 1] = '\0';
 
-		/*break if we are on a blank line*/
-		if(strlen(current_line) == 0)
+		/*are we on a blank line? if so skip (else statement)*/
+		if(strlen(current_line) != 0)
 		{
-			break;
+			/*store sub string of current line (before colon)*/
+			left = strtok(current_line, ":");
+
+			/*if left is NULL then something went wrong*/
+			if(!left)
+			{
+				fprintf(stderr, "error (read_mem_file): " 
+					"incorrect .mem file format in line " 
+					"%d\n", line_count);
+				return -1;
+			}
+
+			/*store sub string of current line (after colon)*/
+			right = strtok(NULL, ":");
+
+			/*if right is NULL then something went wrong*/
+			if(!right)
+			{
+				fprintf(stderr, "error (read_mem_file): " 
+					"incorrect .mem file format in line " 
+					"%d\n", line_count);
+				return -1;
+			}
+
+			/*if there are any more tokens then the current line 
+			* isn't valid formatting*/
+			if(strtok(NULL, ":"))
+			{
+				fprintf(stderr, "error (read_mem_file): " 
+					"incorrect .mem file format in line " 
+					"%d\n", line_count);
+				return -1;
+			}
+
+			/*fill in MEM data into provided mem_data structure*/
+			err = mem_parse_line(left, right, meme_data);
+
+			if(err)
+			{
+				fprintf(stderr, "error (read_mem_file): error "
+					"encountered (mem_parse_line)\n");
+				return -1;
+			}
+
+			/*move onto next line*/
+			current_length = getline(&current_line, &n, fp);
+			line_count++;
 		}
-
-		/*store sub string of current line (before colon)*/
-		left = strtok(current_line, ":");
-
-		/*if left is NULL then something went wrong*/
-		if(!left)
+		else
 		{
-			fprintf(stderr, "error (read_mem_file): incorrect " 
-				".mem file format in line %d\n", line_count);
-			return -1;
+			/*move onto next line*/
+			current_length = getline(&current_line, &n, fp);
+			line_count++;
 		}
-
-		/*store sub string of current line (after colon)*/
-		right = strtok(NULL, ":");
-
-		/*if right is NULL then something went wrong*/
-		if(!right)
-		{
-			fprintf(stderr, "error (read_mem_file): incorrect " 
-				" .mem file format in line %d\n", line_count);
-			return -1;
-		}
-
-		/*if there are any more tokens then the current line isn't
- 		* valid formatting*/
-		if(strtok(NULL, ":"))
-		{
-			fprintf(stderr, "error (read_mem_file): incorrect " 
-				".mem file format in line %d\n", line_count);
-			return -1;
-		}
-
-		/*fill in MEM data into provided mem_data structure*/
-		err = mem_parse_line(left, right, meme_data);
-
-		if(err)
-		{
-			fprintf(stderr, "error (read_mem_file): error "
-				"encountered (mem_parse_line)");
-			return -1;
-		}
-
-		/*move onto next line*/
-		current_length = getline(&current_line, &n, fp);
-		line_count++;
 	}
 
 	/*free current_line that was allocated with getline()*/
@@ -145,11 +152,27 @@ font read_fsf_file(char * fsf_file_name)
 	/*File pointer to fsf file*/
 	FILE * fp;
 
-	/*counter*/
-	int i;
+	/*error value and counter and int to store line status*/
+	int err, i = 0, blank = 0;
+
+	/*string to store current line*/
+	char * current_line = NULL;
+
+	/*int to store the number of the current line*/
+	int line_count = 0;
+
+	/*strings for each half of the line (before and after colon)*/
+	char * left;
+	char * right;
+
+	/*size of current_line for getline function*/
+	size_t n = 0, current_length = 0;
 
 	/*default return value (represents failure)*/
 	font default_return;
+
+	/*return font*/
+	font ret;
 
 	/*NULL name represents failure*/
 	default_return.name = "NULL";
@@ -160,11 +183,82 @@ font read_fsf_file(char * fsf_file_name)
 	/*did file open correctly*/
 	if(!fp)
 	{
-		/*TODO*/
+		fprintf(stderr, "error (read_fsf_file): failed to open fsf " 
+			"file\n");
+		return default_return;
 	}
 
-	/*failure*/
-	return default_return;
+	/*get first line*/
+	current_length = getline(&current_line, &n, fp);
+	line_count++;
+
+	/*loop through all lines and tokenize them based off of the colon*/
+	while((int) current_length > -1)
+	{
+		/*NULL terminate the current line w/o new line character*/
+		current_line[current_length - 1] = '\0';
+
+		/*are we on a blank line if so skip it (else statement)*/
+		if(strlen(current_line) != 0)
+		{
+			/*store sub string of current line (before colon)*/
+			left = strtok(current_line, ":");
+
+			/*if left is NULL then something went wrong*/
+			if(!left)
+			{
+				fprintf(stderr, "error (read_fsf_file): " 
+					"incorrect .fsf file format in line " 
+					"%d\n", line_count);
+				return default_return;
+			}
+
+			/*store sub string of current line (after colon)*/
+			right = strtok(NULL, ":");
+
+			/*if right is NULL then something went wrong*/
+			if(!right)
+			{
+				fprintf(stderr, "error (read_fsf_file): " 
+					"incorrect .fsf file format in line " 
+					"%d\n", line_count);
+				return default_return;
+			}
+
+			/*if there are any more tokens then the current line 
+			* isn't valid formatting*/
+			if(strtok(NULL, ":"))
+			{
+				fprintf(stderr, "error(read_fsf_file): " 
+					"incorrect .fsf file format in line " 
+					"%d\n", line_count);
+				return default_return;
+			}
+
+			/*fill in FSF data into provided font data structure*/
+			err = fsf_parse_line(left, right, &ret);
+
+			if(err)
+			{
+				fprintf(stderr, "error (read_fsf_file): error " 
+					"encountered (fsf_parse_line)\n");
+				return default_return;
+			}
+
+			/*move onto next line*/
+			current_length = getline(&current_line, &n, fp);
+			line_count++;
+		}
+		else
+		{
+			/*move onto next line*/
+			current_length = getline(&current_line, &n, fp);
+			line_count++;
+		}
+	}
+
+	/*return successfully*/
+	return ret;
 }
 
 /**Function used to parse an individual MEM file line and create necessary
@@ -246,7 +340,24 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
  * @modified 03/05/2014 */
 int act_parse_line(char * left, char * right, action_file * action_data)
 {
-	/*TODO*/
+	/*strings used to tokenize left and right strings using " " as the
+ 	* delimiter*/
+	char** left_tokens = malloc(START_TOKENS * sizeof(char*));
+	char** right_tokens = malloc(START_TOKENS * sizeof(char*));
+
+	/*store number of right and left tokens*/
+	int left_num_tokens, right_num_tokens;
+
+	/*counters*/
+	int i = 0, j = 0;
+
+	/*tokenize line*/
+	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
+		&right_num_tokens);
+
+	/*TODO some other stuff*/
+
+	/*return successfully*/
 	return 0;
 }
 
@@ -260,7 +371,24 @@ int act_parse_line(char * left, char * right, action_file * action_data)
  * @modified 03/05/2014 */
 int fsf_parse_line(char * left, char * right, font * font_data)
 {
-	/*TODO*/
+	/*strings used to tokenize left and right strings using " " as the
+ 	* delimiter*/
+	char** left_tokens = malloc(START_TOKENS * sizeof(char*));
+	char** right_tokens = malloc(START_TOKENS * sizeof(char*));
+
+	/*store number of right and left tokens*/
+	int left_num_tokens, right_num_tokens;
+
+	/*counters*/
+	int i = 0, j = 0;
+
+	/*tokenize line*/
+	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
+		&right_num_tokens);
+
+	/*TODO some other stuff*/
+
+	/*return successfully*/
 	return 0;
 }
 
