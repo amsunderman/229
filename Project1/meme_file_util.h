@@ -94,6 +94,14 @@ font read_fsf_file(char * fsf_file_name);
  * structures and data and insert it into meme_file * meme_data*/
 int mem_parse_line(char * left, char * right, meme_file * meme_data);
 
+/*function used to parse an individual ACT file line and create necessary
+ * structures and data and insert it into action_file * action_data*/
+int act_parse_line(char * left, char * right, action_file * action_data);
+
+/*function used to parse an individual FSF file line and create necessary
+ * structures and data and insert it into font * font_data*/
+int fsf_parse_line(char * left, char * right, font * font_data);
+
 /*function used to tokenize arguments to the left and right of : in FSF,
  * MEM and ACT files*/
 int tokenize_line(char * left, char * right, char ** left_tokens, 

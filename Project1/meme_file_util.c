@@ -236,6 +236,34 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 	return 0;
 }
 
+/**function used to parse an individual ACT file line and create necessary
+ * structures and data and insert it into action_file * action_data
+ * @param char * left: left part of ACT file line (before colon)
+ * @param char * right: right part of ACT file line (after colon)
+ * @param action_file * action_data: action_file structure to insert data into
+ * @ret int: 0 = operation success, -1 = error(accompanied by print statement)
+ * @author Adam Sunderman
+ * @modified 03/05/2014 */
+int act_parse_line(char * left, char * right, action_file * action_data)
+{
+	/*TODO*/
+	return 0;
+}
+
+/**function used to parse an individual FSF file line and create necessary
+ * structures and data and insert it into font * font_data
+ * @param char * left: left part of FSF file line (before colon)
+ * @param char * right: right part of FSF file line (after colon)
+ * @param font * font_data: font structure to insert data into
+ * @ret int: 0 = operation success, -1 = error(accompanied by print statement)
+ * @author Adam Sunderman
+ * @modified 03/05/2014 */
+int fsf_parse_line(char * left, char * right, font * font_data)
+{
+	/*TODO*/
+	return 0;
+}
+
 /**function used to tokenize arguments to the left and right of : in FSF,
  * MEM and ACT files
  * @param char * left: left string to tokenize
