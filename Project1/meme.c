@@ -9,10 +9,10 @@ int main(int argc, char ** argv)
 	int err;
 
 	/*structure that stores MEM file data*/
-	meme_file * meme_data;
+	meme_file * meme_data = malloc(sizeof(meme_file));
 
 	/*structure that stores ACT file data*/
-	action_file * action_data;
+	action_file * action_data = malloc(sizeof(action_file));
 
 	/*file pointer to MEM file*/
 	FILE * meme_file;
@@ -57,6 +57,10 @@ int main(int argc, char ** argv)
 		fprintf(stderr, "meme: exiting program\n");
 		return -1;
 	}
+
+	/*TESTING*/
+	meme_id ret = find_meme_id(meme_data, "KEANU");
+	printf("%s\n", ret.name);
 
 	/*TODO execute actions*/
 
