@@ -388,6 +388,10 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 
 	/*TODO some other stuff*/
 
+	/*free memory*/
+	free(left_tokens);
+	free(right_tokens);
+
 	/*return successfully*/
 	return 0;
 }
