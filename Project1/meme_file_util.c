@@ -409,7 +409,7 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	}
 
 	/*is it IMAGE*/
-	if(strcmp(right_tokens[0], "IMAGE") == 0 && left_num_tokens == 1)
+	if(strcmp(left_tokens[0], "IMAGE") == 0 && left_num_tokens == 1)
 	{
 		/*There should only be one right_token*/
 		if(right_num_tokens != 1)
@@ -423,7 +423,7 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 		{
 			font_data->image = malloc(strlen(right_tokens[0]) * 
 				sizeof(char));
-			strcpy(font_data->name, right_tokens[0]);
+			strcpy(font_data->image, right_tokens[0]);
 		}
 	}
 
