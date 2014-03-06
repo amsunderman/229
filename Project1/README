@@ -1,6 +1,12 @@
 Author: Adam Sunderman
 NetID: asu1351
 
+PART B INFORMATION
+
+/*TODO*/
+
+PART A INFORMATION
+
 Image Storing Structure:
 For image storing, I created a .c and .h file entitled simp_util, this file had 
 a  data structure entitled simp_file. simp_file contains three unsigned 
