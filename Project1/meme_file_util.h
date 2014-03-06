@@ -94,6 +94,12 @@ font read_fsf_file(char * fsf_file_name);
  * structures and data and insert it into meme_file * meme_data*/
 int mem_parse_line(char * left, char * right, meme_file * meme_data);
 
+/*function used to tokenize arguments to the left and right of : in FSF,
+ * MEM and ACT files*/
+int tokenize_line(char * left, char * right, char ** left_tokens, 
+	char ** right_tokens, int * left_num_tokens, 
+	int * right_num_tokens);
+
 /*function used to return a text_id structure with name equal to the provided 
  * string text_id*/
 text_id find_text_id(meme_id * meme, char * text_id);

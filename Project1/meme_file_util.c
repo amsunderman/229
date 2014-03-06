@@ -163,7 +163,7 @@ font read_fsf_file(char * fsf_file_name)
  * @param meme_file * meme_data: meme_file structure to insert data into
  * @ret int: 0 = operation success, -1 = error(accompanied by print statement)
  * @author Adam Sunderman
- * @modified 02/28/2014 */
+ * @modified 03/05/2014 */
 int mem_parse_line(char * left, char * right, meme_file * meme_data)
 {
 	/*strings used to tokenize left and right strings using " " as the
@@ -171,79 +171,15 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 	char** left_tokens = malloc(START_TOKENS * sizeof(char*));
 	char** right_tokens = malloc(START_TOKENS * sizeof(char*));
 
-	/*temp pointer for realloc*/
-	char** temp;
-
-	/*ints to store number of tokens in each input string*/
-	int left_num_tokens = 0;
-	int right_num_tokens = 0;
-
-	/*ints to store max number of tokens*/
-	int left_max_tokens = START_TOKENS;
-	int right_max_tokens = START_TOKENS;
+	/*store number of right and left tokens*/
+	int left_num_tokens, right_num_tokens;
 
 	/*counters*/
 	int i = 0, j = 0;
 
-	/*store initial left token*/
-	left_tokens[i] = strtok(left, " ");
-
-	/*tokenize left*/
-	while(left_tokens[i])
-	{
-		/*increment counters*/
-		i++;
-		left_num_tokens++;
-
-		/*if left_num_tokens is greater than our allocated memory we
- 		* must re-allocate*/
-		if(left_num_tokens == left_max_tokens)
-		{
-			left_max_tokens += TOKEN_INCREASE_RATE;
-			temp = realloc(left_tokens, left_max_tokens * 
-				sizeof(char*));
-			if(!temp)
-			{
-				fprintf(stderr, "mem_parse_line: failed to " 
-					"allocate memory\n");
-				return -1;
-			}
-			left_tokens = temp;
-		}
-
-		/*move onto next token (will be NULL if no more exist)*/
-		left_tokens[i] = strtok(NULL, " ");
-	}
-
-	/*store initial right token*/
-	right_tokens[j] = strtok(right, " ");
-
-	/*tokenize right*/
-	while(right_tokens[j])
-	{
-		/*increment counters*/
-		j++;
-		right_num_tokens++;
-
-		/*if right_num_tokens is greater than our allocated memory we
- 		* must re-allocate*/
-		if(right_num_tokens == right_max_tokens)
-		{
-			right_max_tokens += TOKEN_INCREASE_RATE;
-			temp = realloc(right_tokens, right_max_tokens * 
-				sizeof(char*));
-			if(!temp)
-			{
-				fprintf(stderr, "mem_parse_line: failed to " 
-					"allocate memory\n");
-				return -1;
-			}
-			right_tokens = temp;
-		}
-
-		/*move onto next token (will be NULL if no more exist)*/
-		right_tokens[j] = strtok(NULL, " ");
-	}
+	/*tokenize line*/
+	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
+		&right_num_tokens);
 
 	/*is this line MEMES?*/
 	if((strcmp(left_tokens[0], "MEMES") == 0) && left_num_tokens == 1)
@@ -284,6 +220,101 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 	/*free memory*/
 	free(right_tokens);
 	free(left_tokens);
+
+	/*return successfully*/
+	return 0;
+}
+
+/**function used to tokenize arguments to the left and right of : in FSF,
+ * MEM and ACT files
+ * @param char * left: left string to tokenize
+ * @param char * right: right string to tokenize
+ * @param char ** left_tokens: pointer to strings containing tokenized left
+ * line
+ * @param char ** right_tokens: pointer to strings containting tokenized
+ * right line
+ * @param int * num_left_tokens: int to store number of left tokens
+ * @param int * num_right_tokens: int to store number of right tokens
+ * @ret int: 0 = operation success -1 = operation failure
+ * @author Adam Sunderman
+ * @modified 03/05/2014*/
+int tokenize_line(char * left, char * right, char ** left_tokens, 
+	char ** right_tokens, int * left_num_tokens, 
+	int * right_num_tokens)
+{
+	/*temp pointer for realloc*/
+	char** temp;
+
+	/*ints to store max number of tokens*/
+	int left_max_tokens = START_TOKENS;
+	int right_max_tokens = START_TOKENS;
+
+	/*counters*/
+	int i = 0, j = 0;
+
+	/*ints to store number of tokens in each input string*/
+	*left_num_tokens = 0;
+	*right_num_tokens = 0;
+
+	/*store initial left token*/
+	left_tokens[i] = strtok(left, " ");
+
+	/*tokenize left*/
+	while(left_tokens[i])
+	{
+		/*increment counters*/
+		i++;
+		(*left_num_tokens)++;
+
+		/*if left_num_tokens is greater than our allocated memory we
+ 		* must re-allocate*/
+		if(*left_num_tokens == left_max_tokens)
+		{
+			left_max_tokens += TOKEN_INCREASE_RATE;
+			temp = realloc(left_tokens, left_max_tokens * 
+				sizeof(char*));
+			if(!temp)
+			{
+				fprintf(stderr, "mem_parse_line: failed to " 
+					"allocate memory\n");
+				return -1;
+			}
+			left_tokens = temp;
+		}
+
+		/*move onto next token (will be NULL if no more exist)*/
+		left_tokens[i] = strtok(NULL, " ");
+	}
+
+	/*store initial right token*/
+	right_tokens[j] = strtok(right, " ");
+
+	/*tokenize right*/
+	while(right_tokens[j])
+	{
+		/*increment counters*/
+		j++;
+		(*right_num_tokens)++;
+
+		/*if right_num_tokens is greater than our allocated memory we
+ 		* must re-allocate*/
+		if(*right_num_tokens == right_max_tokens)
+		{
+			right_max_tokens += TOKEN_INCREASE_RATE;
+			temp = realloc(right_tokens, right_max_tokens * 
+				sizeof(char*));
+			if(!temp)
+			{
+				fprintf(stderr, "mem_parse_line: failed to " 
+					"allocate memory\n");
+				return -1;
+			}
+			right_tokens = temp;
+		}
+
+		/*move onto next token (will be NULL if no more exist)*/
+		right_tokens[j] = strtok(NULL, " ");
+	}
 
 	/*return successfully*/
 	return 0;
