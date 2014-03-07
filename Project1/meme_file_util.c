@@ -12,7 +12,7 @@
  * into
  * @ret int: 0 = operation success, -1 = error (accompanied by print statement)
  * @author Adam Sunderman
- * @modified: 02/28/2014 */
+ * @modified: 03/06/2014 */
 int read_mem_file(FILE * fp, meme_file * meme_data)
 {
 	/*error value and counter*/
@@ -20,9 +20,6 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 
 	/*string to store current line*/
 	char * current_line = NULL;
-
-	/*int to store the number of the current line*/
-	int line_count = 0;
 
 	/*strings for each half of the line (before and after colon)*/
 	char * left;
@@ -44,9 +41,14 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 		return -1;
 	}
 
+	/*initial memory allocation for meme_file*/
+	meme_data->memes = NULL;
+	meme_data->fonts = NULL;
+	meme_data->num_memes = 0;
+	meme_data->num_fonts = 0;
+
 	/*get first line*/
 	current_length = getline(&current_line, &n, fp);
-	line_count++;
 
 	/*loop through all lines and tokenize them based off of the colon*/
 	while((int) current_length > -1)
@@ -63,9 +65,9 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 			/*if left is NULL then something went wrong*/
 			if(!left)
 			{
-				fprintf(stderr, "error (read_mem_file): " 
-					"incorrect .mem file format in line " 
-					"%d\n", line_count);
+				fprintf(stderr, "read_mem_file: " 
+					"incorrect .mem file format line " 
+					"%s\n", current_line);
 				return -1;
 			}
 
@@ -75,9 +77,9 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 			/*if right is NULL then something went wrong*/
 			if(!right)
 			{
-				fprintf(stderr, "error (read_mem_file): " 
-					"incorrect .mem file format in line " 
-					"%d\n", line_count);
+				fprintf(stderr, "read_mem_file: " 
+					"incorrect .mem file format line " 
+					"%s\n", current_line);
 				return -1;
 			}
 
@@ -85,9 +87,9 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 			* isn't valid formatting*/
 			if(strtok(NULL, ":"))
 			{
-				fprintf(stderr, "error (read_mem_file): " 
-					"incorrect .mem file format in line " 
-					"%d\n", line_count);
+				fprintf(stderr, "read_mem_file: " 
+					"incorrect .mem file format line " 
+					"%s\n", current_line);
 				return -1;
 			}
 
@@ -103,13 +105,11 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
 
 			/*move onto next line*/
 			current_length = getline(&current_line, &n, fp);
-			line_count++;
 		}
 		else
 		{
 			/*move onto next line*/
 			current_length = getline(&current_line, &n, fp);
-			line_count++;
 		}
 	}
 
@@ -132,8 +132,6 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
  * @modified: 02/26/2014 */
 int read_act_file(FILE * fp, action_file * action_data)
 {
-	/*general error checking*/
-
 	/*TODO*/
 
 	/*return successfully*/
@@ -146,20 +144,17 @@ int read_act_file(FILE * fp, action_file * action_data)
  * @ret font: font structure with all important info from fsf file will be
  * a default return (name = NULL) if operation failure
  * @author Adam Sunderman
- * @modified 03/05/2014*/
+ * @modified 03/06/2014*/
 font read_fsf_file(char * fsf_file_name)
 {
 	/*File pointer to fsf file*/
 	FILE * fp;
 
 	/*error value and counter and int to store line status*/
-	int err, i = 0, blank = 0;
+	int err, i = 0;
 
 	/*string to store current line*/
 	char * current_line = NULL;
-
-	/*int to store the number of the current line*/
-	int line_count = 0;
 
 	/*strings for each half of the line (before and after colon)*/
 	char * left;
@@ -175,7 +170,7 @@ font read_fsf_file(char * fsf_file_name)
 	font ret;
 
 	/*NULL name represents failure*/
-	default_return.name = "NULL";
+	default_return.name = NULL;
 
 	/*open fsf file*/
 	fp = fopen(fsf_file_name, "r+");
@@ -183,7 +178,7 @@ font read_fsf_file(char * fsf_file_name)
 	/*did file open correctly*/
 	if(!fp)
 	{
-		fprintf(stderr, "error (read_fsf_file): failed to open fsf " 
+		fprintf(stderr, "read_fsf_file: failed to open fsf " 
 			"file\n");
 		return default_return;
 	}
@@ -196,7 +191,6 @@ font read_fsf_file(char * fsf_file_name)
 
 	/*get first line*/
 	current_length = getline(&current_line, &n, fp);
-	line_count++;
 
 	/*loop through all lines and tokenize them based off of the colon*/
 	while((int) current_length > -1)
@@ -213,9 +207,9 @@ font read_fsf_file(char * fsf_file_name)
 			/*if left is NULL then something went wrong*/
 			if(!left)
 			{
-				fprintf(stderr, "error (read_fsf_file): " 
-					"incorrect .fsf file format in line " 
-					"%d\n", line_count);
+				fprintf(stderr, "read_fsf_file: " 
+					"incorrect .fsf file format line " 
+					"%s\n", current_line);
 				return default_return;
 			}
 
@@ -225,9 +219,9 @@ font read_fsf_file(char * fsf_file_name)
 			/*if right is NULL then something went wrong*/
 			if(!right)
 			{
-				fprintf(stderr, "error (read_fsf_file): " 
-					"incorrect .fsf file format in line " 
-					"%d\n", line_count);
+				fprintf(stderr, "read_fsf_file: " 
+					"incorrect .fsf file format line " 
+					"%s\n", current_line);
 				return default_return;
 			}
 
@@ -235,9 +229,9 @@ font read_fsf_file(char * fsf_file_name)
 			* isn't valid formatting*/
 			if(strtok(NULL, ":"))
 			{
-				fprintf(stderr, "error(read_fsf_file): " 
-					"incorrect .fsf file format in line " 
-					"%d\n", line_count);
+				fprintf(stderr, "read_fsf_file: " 
+					"incorrect .fsf file format line " 
+					"%s\n", current_line);
 				return default_return;
 			}
 
@@ -253,13 +247,11 @@ font read_fsf_file(char * fsf_file_name)
 
 			/*move onto next line*/
 			current_length = getline(&current_line, &n, fp);
-			line_count++;
 		}
 		else
 		{
 			/*move onto next line*/
 			current_length = getline(&current_line, &n, fp);
-			line_count++;
 		}
 	}
 
@@ -277,7 +269,7 @@ font read_fsf_file(char * fsf_file_name)
  * @param meme_file * meme_data: meme_file structure to insert data into
  * @ret int: 0 = operation success, -1 = error(accompanied by print statement)
  * @author Adam Sunderman
- * @modified 03/05/2014 */
+ * @modified 03/06/2014 */
 int mem_parse_line(char * left, char * right, meme_file * meme_data)
 {
 	/*strings used to tokenize left and right strings using " " as the
@@ -307,14 +299,20 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 		/*loop through right tokens and make meme_id's for them*/
 		for(i = 0; i < right_num_tokens; i++)
 		{
+			/*set name*/
 			meme_data->memes[i].name = malloc(
 				strlen(right_tokens[i]) * sizeof(char));
 			strcpy(meme_data->memes[i].name, right_tokens[i]);
+
+			/*initialize image and location data*/
+			meme_data->memes[i].image = NULL;
+			meme_data->memes[i].locations = NULL;
+			meme_data->memes[i].num_locations = 0;
 		}
 	}
 
 	/*is this line FONTS?*/
-	if((strcmp(left_tokens[0], "FONTS") == 0) && left_num_tokens == 1)
+	else if((strcmp(left_tokens[0], "FONTS") == 0) && left_num_tokens == 1)
 	{
 		/*allocate memory for fonts*/
 		meme_data->fonts = malloc(right_num_tokens * sizeof(font));
@@ -326,10 +324,33 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 		for(i = 0; i < right_num_tokens; i++)
 		{
 			meme_data->fonts[i] = read_fsf_file(right_tokens[i]);
+
+			/*did read_fsf_file succeed*/
+			if(meme_data->fonts[i].name == NULL)
+			{
+				fprintf(stderr, "error (meme_parse_line): " 
+				"error encountered read_fsf_file\n");
+				return -1;
+			}
 		}
 	}
 
-	/*TODO some other stuff*/
+	/*is this a FILE identifier*/
+	else if((strcmp(left_tokens[1], "FILE") == 0) && left_num_tokens == 2)
+	{
+		/*there should be 1 right token*/
+		if(right_num_tokens != 1)
+		{
+			fprintf(stderr, "meme_parse_line: invalid line %s:%s", 
+				left, right);
+			return -1;
+		}
+		/*try to find meme_id to store file name in*/
+		else
+		{
+			/*TODO*/
+		}
+	}
 
 	/*free memory*/
 	free(right_tokens);
@@ -377,7 +398,7 @@ int act_parse_line(char * left, char * right, action_file * action_data)
  * @param font * font_data: font structure to insert data into
  * @ret int: 0 = operation success, -1 = error(accompanied by print statement)
  * @author Adam Sunderman
- * @modified 03/05/2014 */
+ * @modified 03/06/2014 */
 int fsf_parse_line(char * left, char * right, font * font_data)
 {
 	/*strings used to tokenize left and right strings using " " as the
@@ -408,7 +429,7 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 		&right_num_tokens);
 
 	/*temp string to store everyting but last character in left_tokens[0]
-	* (to test for the word CHARACTER*/
+	* (to test for the word CHARACTER)*/
 	character_temp = malloc(strlen(left_tokens[0]));
 	strncpy(character_temp, left_tokens[0], (strlen(left_tokens[0])-1));
 	c = left_tokens[0][strlen(left_tokens[0]) - 1];
@@ -419,8 +440,8 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 		/*There should only be one right_token*/
 		if(right_num_tokens != 1)
 		{
-			fprintf(stderr, "error (fsf_parse_line): incorrect " 
-				"format for NAME\n");
+			fprintf(stderr, "fsf_parse_line: incorrect " 
+				"format for line %s:%s\n", left, right);
 			return -1;
 		}
 		/*else save font name*/
@@ -438,8 +459,8 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 		/*There should only be one right_token*/
 		if(right_num_tokens != 1)
 		{
-			fprintf(stderr, "error (fsf_parse_line): incorrect " 
-				"format for IMAGE\n");
+			fprintf(stderr, "fsf_parse_line: incorrect " 
+				"format for line %s:%s\n", left, right);
 			return -1;
 		}
 		/*else save font image*/
@@ -503,8 +524,8 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	/*invalid line*/
 	else
 	{
-		fprintf(stderr, "fsf_parse_line: invalid line %s\n", 
-			left_tokens[0]);
+		fprintf(stderr, "fsf_parse_line: invalid line %s:%s\n", 
+			left, right);
 		return -1;
 	}
 

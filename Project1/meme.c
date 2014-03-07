@@ -6,7 +6,7 @@
 int main(int argc, char ** argv)
 {
 	/*integer that stores error values*/
-	int err;
+	int err, i;
 
 	/*structure that stores MEM file data*/
 	meme_file * meme_data = malloc(sizeof(meme_file));
@@ -62,7 +62,12 @@ int main(int argc, char ** argv)
 	meme_id ret = find_meme_id(meme_data, "KEANU");
 	printf("%s\n", ret.name);
 
-	printf("%s %s\n", meme_data->fonts[0].name, meme_data->fonts[0].image);
+	for(i = 0; i < meme_data->fonts[0].num_characters; i++)
+	{
+		printf("%c %d %d %d %d\n", meme_data->fonts[0].characters[i].represented, 
+		meme_data->fonts[0].characters[i].x, meme_data->fonts[0].characters[i].y, 
+		meme_data->fonts[0].characters[i].w, meme_data->fonts[0].characters[i].h);
+	}
 
 	/*TODO execute actions*/
 
