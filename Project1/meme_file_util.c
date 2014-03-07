@@ -188,6 +188,12 @@ font read_fsf_file(char * fsf_file_name)
 		return default_return;
 	}
 
+	/*initial memory allocation for font members*/
+	ret.name = NULL;
+	ret.image = NULL;
+	ret.characters = malloc(START_TOKENS * sizeof(character));
+	ret.num_characters = 0;
+
 	/*get first line*/
 	current_length = getline(&current_line, &n, fp);
 	line_count++;
@@ -379,15 +385,33 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	char** left_tokens = malloc(START_TOKENS * sizeof(char*));
 	char** right_tokens = malloc(START_TOKENS * sizeof(char*));
 
+	/*temp string and character used to store substring and character of 
+ 	* CHARACTERc identifier*/
+	char* character_temp;
+	char c;
+
 	/*store number of right and left tokens*/
 	int left_num_tokens, right_num_tokens;
 
 	/*counters*/
 	int i = 0, j = 0;
+	int c_index;
+
+	/*max number of characters for currently allocated memory*/
+	int max_characters = START_TOKENS;
+
+	/*temp character * for reallocation*/
+	character * temp;
 
 	/*tokenize line*/
 	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
 		&right_num_tokens);
+
+	/*temp string to store everyting but last character in left_tokens[0]
+	* (to test for the word CHARACTER*/
+	character_temp = malloc(strlen(left_tokens[0]));
+	strncpy(character_temp, left_tokens[0], (strlen(left_tokens[0])-1));
+	c = left_tokens[0][strlen(left_tokens[0]) - 1];
 
 	/*is it NAME?*/
 	if(strcmp(left_tokens[0], "NAME") == 0 && left_num_tokens == 1)
@@ -409,7 +433,7 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	}
 
 	/*is it IMAGE*/
-	if(strcmp(left_tokens[0], "IMAGE") == 0 && left_num_tokens == 1)
+	else if(strcmp(left_tokens[0], "IMAGE") == 0 && left_num_tokens == 1)
 	{
 		/*There should only be one right_token*/
 		if(right_num_tokens != 1)
@@ -427,7 +451,62 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 		}
 	}
 
-	/*TODO some other stuff*/
+	/*is it CHARACTER*/
+	else if(strcmp(character_temp, "CHARACTER") == 0 && 
+		left_num_tokens == 1)
+	{
+		/*there should be 4 right tokens (x y w h)*/
+		if(right_num_tokens != 4)
+		{
+			fprintf(stderr, "error (fsf_parse_line): incorrect "
+				"format for CHARACTER%c\n", c);
+			return -1;
+		}
+		/*else save character structure*/
+		else
+		{
+			/*store current index*/
+			c_index = font_data->num_characters;
+
+			/*increment num_characters*/
+			font_data->num_characters = font_data->num_characters 
+				+ 1;
+
+			/*check num_characters vs max_characters*/
+			if(font_data->num_characters == max_characters)
+			{
+				max_characters += TOKEN_INCREASE_RATE;
+				temp = realloc(font_data->characters, 
+					max_characters * sizeof(character));
+				if(!temp)
+				{
+					fprintf(stderr, "fsf_parse_line: " 
+						"failed to allocate memory\n");
+					return -1;
+				}
+				font_data->characters = temp;
+			}
+
+			/*store character data*/
+			font_data->characters[c_index].represented = c;
+			font_data->characters[c_index].x = 
+				atoi(right_tokens[0]);
+			font_data->characters[c_index].y = 
+				atoi(right_tokens[1]);
+			font_data->characters[c_index].w = 
+				atoi(right_tokens[2]);
+			font_data->characters[c_index].h = 
+				atoi(right_tokens[3]);
+		}
+	}
+
+	/*invalid line*/
+	else
+	{
+		fprintf(stderr, "fsf_parse_line: invalid line %s\n", 
+			left_tokens[0]);
+		return -1;
+	}
 
 	/*free memory*/
 	free(left_tokens);
