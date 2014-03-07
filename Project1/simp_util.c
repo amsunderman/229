@@ -529,7 +529,7 @@ void overlay_calculation(unsigned char * color_value1,
 	{
 		left_temp = alpha2_d / 255;
 		right_temp = (alpha1_d * (255 - alpha2_d))/(255 * 255);
-		*alpha1 = 0x000000FF & 255 * (int) (left_temp + right_temp);
+		*alpha1 = 0x000000FF & (int) (255 * (left_temp + right_temp));
 	}
 	else
 	{
