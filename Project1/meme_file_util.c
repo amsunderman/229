@@ -1078,19 +1078,17 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 	character * c;
 	text_id t;
 
-	out_fp = fopen(action_data->out, "r+");
-
-	err = read_simp_file(out_fp, out);
+	out_fp = fopen(action_data->out, "wb");
 
 	meme_id * memeid = find_meme_id(meme_data, action_data->meme_id);
 
-	meme_fp = fopen(memeid->image, "r+");
+	meme_fp = fopen(memeid->image, "r+b");
 
 	err = read_simp_file(meme_fp, meme);
 
 	font * cur_font = find_font(meme_data, action_data->font_id);
 
-	font_fp = fopen(cur_font->image, "r+");
+	font_fp = fopen(cur_font->image, "r+b");
 
 	err = read_simp_file(font_fp, font_file);
 
@@ -1127,7 +1125,10 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 		printf("testing\n");
 		cur_x = 0;
 		cur_y = 0;
+		line_width = 0;
 	}
+
+	write_simp_file(out_fp, meme);
 
 	/*free simp memory
 	simp_data_clear(out);
