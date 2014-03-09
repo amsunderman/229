@@ -488,6 +488,9 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	/*store number of right and left tokens*/
 	int left_num_tokens, right_num_tokens;
 
+	/*int 0 = !CHARACTER'space' 1 = CHARACTER'space'*/
+	int space = 0;
+
 	/*counters*/
 	int i = 0, j = 0;
 	int c_index;
@@ -498,9 +501,22 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	/*temp character * for reallocation*/
 	character * temp;
 
+	/*catch "Character'space'" condition pre_tokenize*/
+	if(strcmp(left, "CHARACTER ") == 0)
+	{
+		space = 1;
+	}
+
 	/*tokenize line*/
 	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
 		&right_num_tokens);
+
+	/*catch "Character'space'" condition post_tokenize*/
+	if(space == 1)
+	{
+		left_num_tokens = 1;
+		left_tokens[0] = "CHARACTER ";
+	}
 
 	/*temp string to store everyting but last character in left_tokens[0]
 	* (to test for the word CHARACTER)*/
