@@ -97,7 +97,18 @@ int main(int argc, char ** argv)
 
 	/*ENDTESTING*/
 
-	/*TODO execute actions*/
+	/*execute actions*/
+	err = execute_actions(meme_data, action_data);
+
+	if(err)
+	{
+		fprintf(stderr, "error (meme): error encountered " 
+			"(execute_actions)\n");
+		fprintf(stderr, "meme: exiting program\n");
+		return -1;
+	}
+
+	/*Free Memory*/
 
 	/*return successfully*/
 	return 0;

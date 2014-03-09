@@ -1001,22 +1001,136 @@ meme_id * find_meme_id(meme_file * meme_data, char * meme_id_name)
 	return NULL;
 }
 
+font * find_font(meme_file * meme_data, char* font_id)
+{
+	/*counter*/
+	int i;
+
+	/*general error checking*/
+	if(!meme_data)
+	{
+		fprintf(stderr, "find_font: meme_file structure is null\n");
+		return NULL;
+	}
+
+	if(!font_id)
+	{
+		fprintf(stderr, "find_font: font_id string is null\n");
+		return NULL;
+	}
+
+	/*look through fonts within meme_file structure to find correct
+	* font and return it*/
+	for(i = 0; i < meme_data->num_fonts; i++)
+	{
+		if(strcmp(font_id, meme_data->fonts[i].name) == 0)
+		{
+			return &(meme_data->fonts[i]);
+		}
+	}
+
+	/*if we didn't find it then it doesn't exist; return NULL*/
+	return NULL;
+}
+
+character * find_character(font * font_data, char c)
+{
+	/*counter*/
+	int i;
+
+	/*general error checking*/
+	/*TODO*/
+
+	/*look through characters within font_data to find the one that matches
+	* c*/
+	for(i = 0; i < font_data->num_characters; i++)
+	{
+		if(font_data->characters[i].represented == c)
+		{
+			return &(font_data->characters[i]);
+		}
+	}
+
+	return NULL;
+}
+
 /**TODO*/
 int execute_actions(meme_file * meme_data, action_file * action_data)
 {
-	/*TODO*/
-}
+	/*structures to hold simp data*/
+	struct simp_file * out = malloc(20);
+	struct simp_file * meme = malloc(20);
+	struct simp_file * font_file = malloc(20);
+	struct simp_file * crop_temp = malloc(20);
 
-/**TODO*/
-struct simp_file * load_font()
-{
-	/*TODO*/
-	return NULL;
-}
+	/*simp file pointers*/
+	FILE * out_fp;
+	FILE * meme_fp;
+	FILE * font_fp;
 
-/**TODO*/
-struct simp_file * load_meme()
-{
-	/*TODO*/
-	return NULL;
+	/*counters and err value*/
+	int i, j, err;
+
+	int line_width = 0;
+	int cur_x = 0;
+	int cur_y = 0;
+
+	character * c;
+	text_id t;
+
+	out_fp = fopen(action_data->out, "r+");
+
+	err = read_simp_file(out_fp, out);
+
+	meme_id * memeid = find_meme_id(meme_data, action_data->meme_id);
+
+	meme_fp = fopen(memeid->image, "r+");
+
+	err = read_simp_file(meme_fp, meme);
+
+	font * cur_font = find_font(meme_data, action_data->font_id);
+
+	font_fp = fopen(cur_font->image, "r+");
+
+	err = read_simp_file(font_fp, font_file);
+
+	for(i = 0; i < action_data->num_actions; i++)
+	{
+		t = find_text_id(memeid, action_data->actions[i].text_id);
+		printf("%s\n", t.name);
+		cur_x = t.x;
+		cur_y = t.y;
+		printf("x coor %d\n", cur_x);
+		for(j = 0; j < strlen(action_data->actions[i].message); j++)
+		{
+			c = find_character(cur_font, 
+				action_data->actions[i].message[j]);
+			printf("%c width %d\n", c->represented, c->w);
+			line_width += c->w;
+		}
+		cur_x = cur_x - (line_width>>1);
+		printf("x left %d x right %d\n", cur_x, cur_x + line_width);
+		cur_y = cur_y - c->h;
+		for(j = 0; j < strlen(action_data->actions[i].message); j++)
+		{
+			c = find_character(cur_font,
+				action_data->actions[i].message[j]);
+			printf("%c %d %d %d %d\n", c->represented, c->x, 
+				c->y, c->w, c->h);
+			crop(font_file, crop_temp, c->x, c->y, c->w, c->h);
+			printf("%d %d\n", cur_x, cur_y);
+			overlay(meme, crop_temp, cur_x, cur_y);
+			simp_data_clear(crop_temp);
+			crop_temp = malloc(20);
+			cur_x += c->w;
+		}
+		printf("testing\n");
+		cur_x = 0;
+		cur_y = 0;
+	}
+
+	/*free simp memory
+	simp_data_clear(out);
+	simp_data_clear(meme);
+	simp_data_clear(font);*/
 }

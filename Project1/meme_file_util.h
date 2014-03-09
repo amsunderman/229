@@ -25,6 +25,22 @@
 #include "simp_util.h"
 #endif
 
+struct simp_file
+{
+	int width;
+	int height;
+	int num_pixels;
+	struct simp_pixel ** pixels;
+};
+
+struct simp_pixel
+{
+	unsigned char red_value;
+	unsigned char green_value;
+	unsigned char blue_value;
+	unsigned char alpha_value;
+};
+
 /*typedef'd structure to store the information for a specific character in a FSF
  * file*/
 typedef struct character_struct
@@ -124,14 +140,11 @@ text_id find_text_id(meme_id * meme, char * text_id);
  * string meme_id*/
 meme_id * find_meme_id(meme_file * meme_data, char * meme_id);
 
+font * find_font(meme_file * meme_data, char * font_id);
+
+character * find_character(font * font_data, char c);
+
 /*Function used to execute ACT file actions*/
 int execute_actions(meme_file * meme_data, action_file * action_data);
-
-/*Function used to load font contained in the meme_data structure*/
-struct simp_file * load_font();
-
-/*Function used to load a simp_image into the simp_file structure defined in
- * simp_util.h from the meme_data structure*/
-struct simp_file * load_meme();
 
 #endif

@@ -27,10 +27,10 @@ meme: meme.o meme_file_util.o simp_util.o
 	$(CC) $(CFLAGS) -o meme meme.o meme_file_util.o simp_util.o
 
 #object files
-simp_util.o: simp_util.c simp_util.h
-	$(CC) $(CFLAGS) -c simp_util.c
 meme_file_util.o: meme_file_util.c meme_file_util.h
 	$(CC) $(CFLAGS) -c meme_file_util.c
+simp_util.o: simp_util.c simp_util.h
+	$(CC) $(CFLAGS) -c simp_util.c
 crop.o: crop.c
 	$(CC) $(CFLAGS) -c crop.c
 bw.o: bw.c
