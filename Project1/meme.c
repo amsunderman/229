@@ -58,6 +58,8 @@ int main(int argc, char ** argv)
 		return -1;
 	}
 
+	/*TESTING*/
+
 	meme_id * ret;
 
 	for(j = 0; j < meme_data->num_memes; j++)
@@ -83,6 +85,8 @@ int main(int argc, char ** argv)
                 meme_data->fonts[0].characters[i].x, meme_data->fonts[0].characters[i].y, 
                 meme_data->fonts[0].characters[i].w, meme_data->fonts[0].characters[i].h);
         }
+
+	/*ENDTESTING*/
 
 	/*TODO execute actions*/
 

@@ -69,13 +69,20 @@ typedef struct meme_file_struct
 	int num_fonts;
 }meme_file;
 
+/*typedef'd structure to store an action*/
+typedef struct action_struct
+{
+	char* text_id;
+	char* message;
+}action;
+
 /*typedef'd structure to store the information collected from a ACT file*/
 typedef struct action_file_struct
 {
 	struct simp_file * out; /*struct defined in simp_util.h*/
 	char* meme_id;
 	char* font_id;
-	char* text_id;
+	action * actions; /*action typedef'd above*/
 }action_file;
 
 /*function used to read data stored in MEM file and store it in the meme_file

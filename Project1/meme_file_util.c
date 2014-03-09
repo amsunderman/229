@@ -132,7 +132,96 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
  * @modified: 02/26/2014 */
 int read_act_file(FILE * fp, action_file * action_data)
 {
-	/*TODO*/
+	/*error value and counter*/
+	int err, i = 0;
+
+	/*string to store current line*/
+	char * current_line = NULL;
+
+	/*strings for each half of the line (before and after colon)*/
+	char * left;
+	char * right;
+
+	/*size of current_line for getline function*/
+	size_t n = 0, current_length = 0;
+
+	/*general error checking*/
+	if(!fp)
+	{
+		fprintf(stderr, "read_act_file: file pointer is null\n");
+		return -1;
+	}
+
+	if(!action_data)
+	{
+		fprintf(stderr, "read_act_file: action_data is null\n");
+		return -1;
+	}
+
+	/*initial memory allocation for act file*/
+	action_data->out = NULL;
+	action_data->meme_id = NULL;
+	action_data->font_id = NULL;
+	action_data->actions = malloc(START_TOKENS * sizeof(action));
+
+	/*get first line*/
+	current_length = getline(&current_line, &n, fp);
+
+	/*loop through all lines and tokenize them based off of the colon*/
+	while((int) current_length > -1)
+	{
+		/*NULL terminate the current line w/o new line character*/
+		current_line[current_length - 1] = '\0';
+
+		/*are we on a blank line? if so skip (else statement)*/
+		if(strlen(current_line) != 0)
+		{
+			/*store sub string of current line (before colon)*/
+			left = strtok(current_line, ":");
+
+			/*if left is NULL then something went wrong*/
+			if(!left)
+			{
+				fprintf(stderr, "read_act_file: incorrect" 
+					".act file format line %s\n", 
+					current_line);
+				return -1;
+			}
+
+			/*store sub string of current line (after colon)*/
+			right = strtok(NULL, ":");
+
+			/*if right is NULL then something went wrong*/
+			if(!right)
+			{
+				fprintf(stderr, "read_act_file: incorrect" 
+					".act file format line %s\n", 
+					current_line);
+				return -1;
+			}
+
+			/*fill in ACt data into provided action_data structure*/
+			err = act_parse_line(left, right, action_data);
+
+			if(err)
+			{
+				fprintf(stderr, "error (read_act_file): error " 
+					"encountered (act_parse_line)\n");
+				return -1;
+			}
+
+			/*move onto next line*/
+			current_length = getline(&current_line, &n, fp);
+		}
+		else
+		{
+			/*move onto next line*/
+			current_length = getline(&current_line, &n, fp);
+		}
+	}
+
+	/*free current_line that was allocated with getline()*/
+	free(current_line);
 
 	/*return successfully*/
 	return 0;
@@ -150,7 +239,7 @@ font read_fsf_file(char * fsf_file_name)
 	/*File pointer to fsf file*/
 	FILE * fp;
 
-	/*error value and counter and int to store line status*/
+	/*error value and counter*/
 	int err, i = 0;
 
 	/*string to store current line*/
