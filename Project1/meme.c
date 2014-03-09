@@ -6,7 +6,7 @@
 int main(int argc, char ** argv)
 {
 	/*integer that stores error values*/
-	int err, i;
+	int err, i, j;
 
 	/*structure that stores MEM file data*/
 	meme_file * meme_data = malloc(sizeof(meme_file));
@@ -58,16 +58,31 @@ int main(int argc, char ** argv)
 		return -1;
 	}
 
-	/*TESTING*/
-	meme_id ret = find_meme_id(meme_data, "KEANU");
-	printf("%s\n", ret.name);
+	meme_id * ret;
 
-	for(i = 0; i < meme_data->fonts[0].num_characters; i++)
+	for(j = 0; j < meme_data->num_memes; j++)
 	{
-		printf("%c %d %d %d %d\n", meme_data->fonts[0].characters[i].represented, 
-		meme_data->fonts[0].characters[i].x, meme_data->fonts[0].characters[i].y, 
-		meme_data->fonts[0].characters[i].w, meme_data->fonts[0].characters[i].h);
+
+	ret = &(meme_data->memes[j]);
+
+	printf("%s %s\n", ret->name, ret->image);
+
+        for(i = 0; i < ret->num_locations; i++)
+        {
+                printf("%s %s:%d %d\n", ret->name, ret->locations[i].name,
+                        ret->locations[i].x, ret->locations[i].y);
+        }
+
 	}
+
+	printf("\n%s %s\n", meme_data->fonts[0].name, meme_data->fonts[0].image);
+
+        for(i = 0; i < meme_data->fonts[0].num_characters; i++)
+        {
+                printf("%c %d %d %d %d\n", meme_data->fonts[0].characters[i].represented, 
+                meme_data->fonts[0].characters[i].x, meme_data->fonts[0].characters[i].y, 
+                meme_data->fonts[0].characters[i].w, meme_data->fonts[0].characters[i].h);
+        }
 
 	/*TODO execute actions*/
 

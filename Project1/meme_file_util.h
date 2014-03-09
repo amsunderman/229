@@ -43,7 +43,7 @@ typedef struct font_struct
 }font;
 
 /*typedef'd structure to store the information for a specific test_id in a MEM
- *  * file*/
+ *file*/
 typedef struct text_id_struct
 {
 	char * name;
@@ -114,7 +114,7 @@ text_id find_text_id(meme_id * meme, char * text_id);
 
 /*Function used to return a meme_id structure with name equal to the provided
  * string meme_id*/
-meme_id find_meme_id(meme_file * meme_data, char * meme_id);
+meme_id * find_meme_id(meme_file * meme_data, char * meme_id);
 
 /*Function used to load font contained in the meme_data structure*/
 struct simp_file * load_font();

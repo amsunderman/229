@@ -282,6 +282,16 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 
 	/*counters*/
 	int i = 0, j = 0;
+	int l_index;
+
+	/*max number of locations for currently allocated memory*/
+	int max_locations = START_TOKENS;
+
+	/*temp meme_id for realloc of locations*/
+	text_id * temp;
+
+	/*pointer to store meme_id to modify for certain .mem lines*/
+	meme_id * current_meme_id;
 
 	/*tokenize line*/
 	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
@@ -301,12 +311,13 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 		{
 			/*set name*/
 			meme_data->memes[i].name = malloc(
-				strlen(right_tokens[i]) * sizeof(char));
+				strlen((right_tokens[i]) + 1) * sizeof(char));
 			strcpy(meme_data->memes[i].name, right_tokens[i]);
 
 			/*initialize image and location data*/
 			meme_data->memes[i].image = NULL;
-			meme_data->memes[i].locations = NULL;
+			meme_data->memes[i].locations = malloc(START_TOKENS * 
+				sizeof(text_id));
 			meme_data->memes[i].num_locations = 0;
 		}
 	}
@@ -341,15 +352,78 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 		/*there should be 1 right token*/
 		if(right_num_tokens != 1)
 		{
-			fprintf(stderr, "meme_parse_line: invalid line %s:%s", 
-				left, right);
+			fprintf(stderr, "meme_parse_line: invalid line " 
+				"%s:%s\n", left, right);
 			return -1;
 		}
 		/*try to find meme_id to store file name in*/
 		else
 		{
-			/*TODO*/
+			current_meme_id = find_meme_id(meme_data, 
+				left_tokens[0]);
+			/*did we find the meme_id*/
+			if(!current_meme_id)
+			{
+				fprintf(stderr, "meme_parse_line: invalid " 
+					"line %s:%s\n", left, right);
+				return -1;
+			}
+			/*assign image to meme_id*/
+			current_meme_id->image = malloc((
+				strlen(right_tokens[0]) + 1) * sizeof(char));
+			strcpy(current_meme_id->image, right_tokens[0]);
 		}
+	}
+
+	/*is this a text_id*/
+	else if(right_num_tokens == 2 && left_num_tokens == 2)
+	{
+		/*find meme_id to add location to*/
+		current_meme_id = find_meme_id(meme_data, 
+			left_tokens[0]);
+		/*did we find it*/
+		if(!current_meme_id)
+		{
+			fprintf(stderr, "meme_parse_line: invalid line " 
+				"%s:%s\n", left, right);
+			return -1;
+		}
+		
+		/*store current index*/
+		l_index = current_meme_id->num_locations;
+		/*increment num_locations*/
+		current_meme_id->num_locations = current_meme_id->num_locations 
+			+ 1;
+
+		/*check num_locations vs max_locations*/
+		if(current_meme_id->num_locations == max_locations)
+		{
+			max_locations += TOKEN_INCREASE_RATE;
+			temp = realloc(current_meme_id->locations, 
+				max_locations * sizeof(text_id));
+			if(!temp)
+			{
+				fprintf(stderr, "mem_parse_line: failed to "
+					"allocate memory\n");
+				return -1;
+			}
+			current_meme_id->locations = temp;
+		}
+
+		/*store location data*/
+		current_meme_id->locations[l_index].name = malloc(
+			strlen(left_tokens[1] + 1) * sizeof(char));
+		strcpy(current_meme_id->locations[l_index].name, 
+			left_tokens[1]);
+		current_meme_id->locations[l_index].x = atoi(right_tokens[0]);
+		current_meme_id->locations[l_index].y = atoi(right_tokens[1]);
+	}
+
+	/*invalid line*/
+	else
+	{
+		fprintf(stderr, "mem_parse_line: invalid line %s:%s\n", left, 
+			right);
 	}
 
 	/*free memory*/
@@ -447,8 +521,8 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 		/*else save font name*/
 		else
 		{
-			font_data->name = malloc(strlen(right_tokens[0]) * 
-				sizeof(char));
+			font_data->name = malloc((strlen(right_tokens[0]) + 1) 
+				* sizeof(char));
 			strcpy(font_data->name, right_tokens[0]);
 		}
 	}
@@ -466,8 +540,8 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 		/*else save font image*/
 		else
 		{
-			font_data->image = malloc(strlen(right_tokens[0]) * 
-				sizeof(char));
+			font_data->image = malloc((strlen(right_tokens[0] + 1)) 
+				* sizeof(char));
 			strcpy(font_data->image, right_tokens[0]);
 		}
 	}
@@ -682,31 +756,27 @@ text_id find_text_id(meme_id * meme, char * text_id_name)
  * @param meme_file * meme_data: meme_file structure to look for meme_id
  * structure
  * @param char * meme_id: string that contains the name of a meme_id structure
- * @ret meme_id: returns a meme_id object with name = to the provided string. 
- * will return default_return (name = NULL) if the meme_id was not found or if 
+ * @ret meme_id *: returns a pointer to meme_id object with name = to the 
+ * provided string. will return NULL if the meme_id was not found or if 
  * an error was encountered
  * @author: Adam Sunderman
  * @modified 03/05/2014 */
-meme_id find_meme_id(meme_file * meme_data, char * meme_id_name)
+meme_id * find_meme_id(meme_file * meme_data, char * meme_id_name)
 {
 	/*counter*/
 	int i;
-
-	/*default return meme_id (represents failure)*/
-	meme_id default_return;
-	default_return.name = "NULL";
 
 	/*general error checking*/
 	if(!meme_data)
 	{
 		fprintf(stderr, "find_meme_id: meme_file structure is null\n");
-		return default_return;
+		return NULL;
 	}
 
 	if(!meme_id_name)
 	{
 		fprintf(stderr, "meme_id string is null\n");
-		return default_return;
+		return NULL;
 	}
 
 	/*look through meme_id's within meme_file structure to find correct
@@ -715,11 +785,12 @@ meme_id find_meme_id(meme_file * meme_data, char * meme_id_name)
 	{
 		if(strcmp(meme_id_name, meme_data->memes[i].name) == 0)
 		{
-			return meme_data->memes[i];
+			return &(meme_data->memes[i]);
 		}
 	}
+
 	/*if we didn't find it then it doesn't exist: return NULL*/
-	return default_return;
+	return NULL;
 }
 
 /**TODO*/
