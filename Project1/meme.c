@@ -64,17 +64,15 @@ int main(int argc, char ** argv)
 
 	for(j = 0; j < meme_data->num_memes; j++)
 	{
-
-	ret = &(meme_data->memes[j]);
-
-	printf("%s %s\n", ret->name, ret->image);
-
-        for(i = 0; i < ret->num_locations; i++)
-        {
-                printf("%s %s:%d %d\n", ret->name, ret->locations[i].name,
-                        ret->locations[i].x, ret->locations[i].y);
-        }
-
+		ret = &(meme_data->memes[j]);
+	
+		printf("%s %s\n", ret->name, ret->image);
+	
+	        for(i = 0; i < ret->num_locations; i++)
+	        {
+	                printf("%s %s:%d %d\n", ret->name, ret->locations[i].name,
+	                        ret->locations[i].x, ret->locations[i].y);
+	        }
 	}
 
 	printf("\n%s %s\n", meme_data->fonts[0].name, meme_data->fonts[0].image);
