@@ -79,10 +79,11 @@ typedef struct action_struct
 /*typedef'd structure to store the information collected from a ACT file*/
 typedef struct action_file_struct
 {
-	struct simp_file * out; /*struct defined in simp_util.h*/
+	char* out;
 	char* meme_id;
 	char* font_id;
 	action * actions; /*action typedef'd above*/
+	int num_actions;
 }action_file;
 
 /*function used to read data stored in MEM file and store it in the meme_file
@@ -122,6 +123,9 @@ text_id find_text_id(meme_id * meme, char * text_id);
 /*Function used to return a meme_id structure with name equal to the provided
  * string meme_id*/
 meme_id * find_meme_id(meme_file * meme_data, char * meme_id);
+
+/*Function used to execute ACT file actions*/
+int execute_actions(meme_file * meme_data, action_file * action_data);
 
 /*Function used to load font contained in the meme_data structure*/
 struct simp_file * load_font();

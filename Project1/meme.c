@@ -86,6 +86,15 @@ int main(int argc, char ** argv)
                 meme_data->fonts[0].characters[i].w, meme_data->fonts[0].characters[i].h);
         }
 
+	printf("\n");
+	printf("%s %s %s\n", action_data->out, action_data->meme_id, 
+		action_data->font_id);
+	for(i = 0; i < action_data->num_actions; i++)
+	{
+		printf("%s %s\n", action_data->actions[i].text_id, 
+			action_data->actions[i].message);
+	}
+
 	/*ENDTESTING*/
 
 	/*TODO execute actions*/

@@ -163,6 +163,7 @@ int read_act_file(FILE * fp, action_file * action_data)
 	action_data->meme_id = NULL;
 	action_data->font_id = NULL;
 	action_data->actions = malloc(START_TOKENS * sizeof(action));
+	action_data->num_actions = 0;
 
 	/*get first line*/
 	current_length = getline(&current_line, &n, fp);
@@ -543,12 +544,114 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 
 	/*counters*/
 	int i = 0, j = 0;
+	int a_index;
+	int right_size = 0;
+	int temp_length = 0;
+
+	/*max number of actions for currently allocated memory*/
+	int max_actions = START_TOKENS;
+
+	/*temp variable for realloc of actions*/
+	action * temp;
 
 	/*tokenize line*/
 	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
 		&right_num_tokens);
 
-	/*TODO some other stuff*/
+	/*is this line OUTFILE*/
+	if((strcmp(left_tokens[0], "OUTFILE") == 0) && left_num_tokens == 1 && 
+		right_num_tokens == 1)
+	{
+		/*set name of outfile*/
+		action_data->out = malloc((strlen(right_tokens[0]) + 1) * 
+			sizeof(char));
+		strcpy(action_data->out, right_tokens[0]);
+	}
+
+	/*is this line MEME*/
+	else if((strcmp(left_tokens[0], "MEME") == 0) && left_num_tokens == 1 
+		&& right_num_tokens == 1)
+	{
+		/*set meme_id string*/
+		action_data->meme_id = malloc((strlen(right_tokens[0]) + 1) * 
+			sizeof(char));
+		strcpy(action_data->meme_id, right_tokens[0]);
+	}
+
+	/*is this line FONT*/
+	else if((strcmp(left_tokens[0], "FONT") == 0) && left_num_tokens == 1 
+		&& right_num_tokens == 1)
+	{
+		/*set font_id string*/
+		action_data->font_id = malloc((strlen(right_tokens[0]) + 1) * 
+			sizeof(char));
+		strcpy(action_data->font_id, right_tokens[0]);
+	}
+
+	/*is this line an action*/
+	else if(left_num_tokens == 1)
+	{
+		/*store current index*/
+		a_index = action_data->num_actions;
+		/*increment num_actions*/
+		action_data->num_actions = action_data->num_actions + 1;
+
+		/*check num_actions vs max_actions*/
+		if(action_data->num_actions == max_actions)
+		{
+			max_actions += TOKEN_INCREASE_RATE;
+			temp = realloc(action_data->actions, max_actions * 
+				sizeof(text_id));
+			if(!temp)
+			{
+				fprintf(stderr, "act_parse_line: failed to " 
+					"allocate memory\n");
+				return -1;
+			}
+			action_data->actions = temp;
+		}
+
+		/*store action data*/
+		action_data->actions[a_index].text_id = malloc((
+			strlen(left_tokens[0]) + 1) * sizeof(char));
+		strcpy(action_data->actions[a_index].text_id, left_tokens[0]);
+
+		/*concatenate right tokens*/
+		right = NULL;
+		for(i = 0; i < right_num_tokens; i++)
+		{
+			right_size += strlen(right_tokens[i]) + 1;
+		}
+		right = malloc(right_size * sizeof(char));
+		for(i = 0; i < right_num_tokens; i++)
+		{
+			strcat(right, right_tokens[i]);
+			if(i == right_num_tokens - 1)
+			{
+				/*no space*/
+			}
+			else
+			{
+				/*space*/
+				temp_length = strlen(right);
+				right[temp_length] = ' ';
+				right[temp_length + 1] = '\0';
+			}
+		}
+
+		/*store message*/
+		action_data->actions[a_index].message = malloc((
+			strlen(right) + 1) * sizeof(char));
+		strcpy(action_data->actions[a_index].message, right);
+	}
+
+	/*invalid line*/
+	else
+	{
+		fprintf(stderr, "act_parse_line: invalid line %s:%s\n", left, 
+			right);
+		return -1;
+	}
 
 	/*return successfully*/
 	return 0;
@@ -896,6 +999,12 @@ meme_id * find_meme_id(meme_file * meme_data, char * meme_id_name)
 
 	/*if we didn't find it then it doesn't exist: return NULL*/
 	return NULL;
+}
+
+/**TODO*/
+int execute_actions(meme_file * meme_data, action_file * action_data)
+{
+	/*TODO*/
 }
 
 /**TODO*/
