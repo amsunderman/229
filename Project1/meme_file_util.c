@@ -1143,54 +1143,136 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 	/*does action_data contain font_id to use?*/
 	if(!action_data->font_id)
 	{
-		/*TODO*/
+		fprintf(stderr, "execute_actions: provided action_data " 
+			"structure does not contain a font_id\n");
 		return -1;
 	}
 
 	/*find font from action_data to use for this action file*/
 	f = find_font(meme_data, action_data->font_id);
 
+	if(!f)
+	{
+		fprintf(stderr, "execute_actions: meme_data does not contain " 
+			"font specified in action_data\n");
+		return -1;
+	}
+
+	/*open font image*/
 	font_fp = fopen(f->image, "r+b");
 
+	if(!font_fp)
+	{
+		fprintf(stderr, "execute_actions: failed to open font image " 
+			"%s\n", f->image);
+		return -1;
+	}
+
+	/*read font simp image into font_simp structure*/
 	err = read_simp_file(font_fp, font_simp);
 
+	if(err)
+	{
+		fprintf(stderr, "error (execute_actions): error encountered " 
+			"(read_simp_file)\n");
+		return -1;
+	}
+
+	/*loop through actions and perform them onto meme_simp*/
 	for(i = 0; i < action_data->num_actions; i++)
 	{
+		/*store current actions text_id*/
 		t = find_text_id(m, action_data->actions[i].text_id);
-		printf("%s\n", t.name);
+
+		/*did we find text_id*/
+		if(t.name == "NULL")
+		{
+			fprintf(stderr, "execute_actions: action %d text_id " 
+				"\"%s\" did not exist in specified meme_id\n", 
+				(i+1), action_data->actions[i].text_id);
+			return -1;
+		}
+
+		/*save x and y from text_id*/
 		cur_x = t.x;
 		cur_y = t.y;
-		printf("x coor %d\n", cur_x);
+
+		/*loop through characters in message to calculate line width*/
 		for(j = 0; j < strlen(action_data->actions[i].message); j++)
 		{
+			/*find character*/
 			c = find_character(f, 
 				action_data->actions[i].message[j]);
-			printf("%c width %d\n", c->represented, c->w);
+
+			/*did we find it*/
+			if(!c)
+			{
+				fprintf(stderr, "execute_actions: action %d " 
+					"character '%c' does not exist in " 
+					"specified font\n", (i+1), 
+					action_data->actions[i].message[j]);
+				return -1;
+			}
 			line_width += c->w;
 		}
+
+		/*update current x and y (for overlay) to offset text id x and 
+ 		* according to line_width*/
 		cur_x = cur_x - (line_width>>1);
-		printf("x left %d x right %d\n", cur_x, cur_x + line_width);
 		cur_y = cur_y - c->h;
+
+		/*loop through characters in message and perform neccessary simp
+ 		* operations to put character on meme image*/
 		for(j = 0; j < strlen(action_data->actions[i].message); j++)
 		{
+			/*find character*/
 			c = find_character(f,
 				action_data->actions[i].message[j]);
-			printf("%c %d %d %d %d\n", c->represented, c->x, 
-				c->y, c->w, c->h);
-			crop(font_simp, crop_temp, c->x, c->y, c->w, c->h);
-			printf("%d %d\n", cur_x, cur_y);
-			overlay(meme_simp, crop_temp, cur_x, cur_y);
+
+			/*crop character from font image*/
+			err = crop(font_simp, crop_temp, c->x, c->y, 
+				c->w, c->h);
+
+			if(err)
+			{
+				fprintf(stderr, "error (execute_actions): " 
+					"error encountered (crop)\n");
+				return -1;
+			}
+
+			/*overlay cropped character onto meme image at 
+ 			* current x and y coordinates*/
+			err = overlay(meme_simp, crop_temp, cur_x, cur_y);
+
+			if(err)
+			{
+				fprintf(stderr, "error (execute_actions): "
+					"error encountered (overlay)\n");
+				return -1;
+			}
+
+			/*clear crop data for next run*/
 			simp_data_clear(crop_temp);
+
+			/*realloc crop data for next run*/
 			crop_temp = malloc(sizeof(struct simp_file));
+
+			/*updata cur_x for next run*/
 			cur_x += c->w;
 		}
-		printf("testing\n");
+		/*re-initialize cur_x cur_y and line_width for next message*/
 		cur_x = 0;
 		cur_y = 0;
 		line_width = 0;
 	}
 
-	write_simp_file(out_fp, meme_simp);
+	/*write new simp data into out_file*/
+	err = write_simp_file(out_fp, meme_simp);
+
+	/*close file pointers*/
+	fclose(out_fp);
+	fclose(font_fp);
+	fclose(meme_fp);
 
 	/*free simp memory*/
 	simp_data_clear(meme_simp);

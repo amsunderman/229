@@ -1,6 +1,8 @@
 #ifndef MEME_FILE_UTIL
 #define MEME_FILE_UTIL
 
+#include "simp_util.h"
+
 #ifndef STDIO
 #define STDIO
 #include <stdio.h>
@@ -22,9 +24,9 @@
 
 #ifndef SIMP_UTIL
 #define SIMP_UTIL
-#include "simp_util.h"
 #endif
 
+/*
 struct simp_file
 {
 	int width;
@@ -39,7 +41,7 @@ struct simp_pixel
 	unsigned char green_value;
 	unsigned char blue_value;
 	unsigned char alpha_value;
-};
+};*/
 
 /*typedef'd structure to store the information for a specific character in a FSF
  * file*/
