@@ -26,23 +26,6 @@
 #define SIMP_UTIL
 #endif
 
-/*
-struct simp_file
-{
-	int width;
-	int height;
-	int num_pixels;
-	struct simp_pixel ** pixels;
-};
-
-struct simp_pixel
-{
-	unsigned char red_value;
-	unsigned char green_value;
-	unsigned char blue_value;
-	unsigned char alpha_value;
-};*/
-
 /*typedef'd structure to store the information for a specific character in a FSF
  * file*/
 typedef struct character_struct
