@@ -1058,10 +1058,9 @@ character * find_character(font * font_data, char c)
 int execute_actions(meme_file * meme_data, action_file * action_data)
 {
 	/*structures to hold simp data*/
-	struct simp_file * out = malloc(20);
-	struct simp_file * meme = malloc(20);
-	struct simp_file * font_file = malloc(20);
-	struct simp_file * crop_temp = malloc(20);
+	struct simp_file * meme_simp = malloc(sizeof(struct simp_file));
+	struct simp_file * font_simp = malloc(sizeof(struct simp_file));
+	struct simp_file * crop_temp = malloc(sizeof(struct simp_file));
 
 	/*simp file pointers*/
 	FILE * out_fp;
@@ -1071,37 +1070,100 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 	/*counters and err value*/
 	int i, j, err;
 
+	/*integers to store data about x, y, and linewidth coordinates for 
+ 	* current action's message*/
 	int line_width = 0;
 	int cur_x = 0;
 	int cur_y = 0;
 
+	/*variables to store current structures from the find 
+ 	* functions*/
 	character * c;
 	text_id t;
+	meme_id * m;
+	font * f;
+	
 
+	/*open out file*/
 	out_fp = fopen(action_data->out, "wb");
 
-	meme_id * memeid = find_meme_id(meme_data, action_data->meme_id);
+	if(!out_fp)
+	{
+		fprintf(stderr, "execute_actions: failed to open out file " 
+			"%s\n", action_data->out);
+		return -1;
+	}
 
-	meme_fp = fopen(memeid->image, "r+b");
+	/*does our action data contain a meme_id?*/
+	if(!action_data->meme_id)
+	{
+		fprintf(stderr, "execute_actions: given action_data structure " 
+			"does not contain a meme_id to use\n");
+		return -1;
+	}
 
-	err = read_simp_file(meme_fp, meme);
+	/*find meme id from ACT file*/
+	m = find_meme_id(meme_data, action_data->meme_id);
 
-	font * cur_font = find_font(meme_data, action_data->font_id);
+	if(!m)
+	{
+		fprintf(stderr, "execute_actions: action file meme_id does " 
+			"not exist\n");
+		return -1;
+	}
 
-	font_fp = fopen(cur_font->image, "r+b");
+	/*does the meme_id have an associated image?*/
+	if(!m->image)
+	{
+		fprintf(stderr, "execute_actions: meme_id from action file " 
+			"does not contain an image\n");
+		return -1;
+	}
 
-	err = read_simp_file(font_fp, font_file);
+	/*open meme image*/
+	meme_fp = fopen(m->image, "r+b");
+
+	if(!meme_fp)
+	{
+		fprintf(stderr, "execute_actions: failed to open meme image " 
+			"%s\n", m->image);
+		return -1;
+	}
+
+	/*read meme image into meme_simp structure*/
+	err = read_simp_file(meme_fp, meme_simp);
+
+	if(err)
+	{
+		fprintf(stderr, "error (execute_actions): error encountered " 
+			"(read_simp_file)\n");
+		return -1;
+	}
+
+	/*does action_data contain font_id to use?*/
+	if(!action_data->font_id)
+	{
+		/*TODO*/
+		return -1;
+	}
+
+	/*find font from action_data to use for this action file*/
+	f = find_font(meme_data, action_data->font_id);
+
+	font_fp = fopen(f->image, "r+b");
+
+	err = read_simp_file(font_fp, font_simp);
 
 	for(i = 0; i < action_data->num_actions; i++)
 	{
-		t = find_text_id(memeid, action_data->actions[i].text_id);
+		t = find_text_id(m, action_data->actions[i].text_id);
 		printf("%s\n", t.name);
 		cur_x = t.x;
 		cur_y = t.y;
 		printf("x coor %d\n", cur_x);
 		for(j = 0; j < strlen(action_data->actions[i].message); j++)
 		{
-			c = find_character(cur_font, 
+			c = find_character(f, 
 				action_data->actions[i].message[j]);
 			printf("%c width %d\n", c->represented, c->w);
 			line_width += c->w;
@@ -1111,15 +1173,15 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 		cur_y = cur_y - c->h;
 		for(j = 0; j < strlen(action_data->actions[i].message); j++)
 		{
-			c = find_character(cur_font,
+			c = find_character(f,
 				action_data->actions[i].message[j]);
 			printf("%c %d %d %d %d\n", c->represented, c->x, 
 				c->y, c->w, c->h);
-			crop(font_file, crop_temp, c->x, c->y, c->w, c->h);
+			crop(font_simp, crop_temp, c->x, c->y, c->w, c->h);
 			printf("%d %d\n", cur_x, cur_y);
-			overlay(meme, crop_temp, cur_x, cur_y);
+			overlay(meme_simp, crop_temp, cur_x, cur_y);
 			simp_data_clear(crop_temp);
-			crop_temp = malloc(20);
+			crop_temp = malloc(sizeof(struct simp_file));
 			cur_x += c->w;
 		}
 		printf("testing\n");
@@ -1128,10 +1190,9 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 		line_width = 0;
 	}
 
-	write_simp_file(out_fp, meme);
+	write_simp_file(out_fp, meme_simp);
 
-	/*free simp memory
-	simp_data_clear(out);
-	simp_data_clear(meme);
-	simp_data_clear(font);*/
+	/*free simp memory*/
+	simp_data_clear(meme_simp);
+	simp_data_clear(font_simp);
 }
