@@ -132,4 +132,8 @@ character * find_character(font * font_data, char c);
 /*Function used to execute ACT file actions*/
 int execute_actions(meme_file * meme_data, action_file * action_data);
 
+int meme_data_clear(meme_file * meme);
+
+int action_data_clear(action_file * act);
+
 #endif

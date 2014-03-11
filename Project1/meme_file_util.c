@@ -1281,3 +1281,32 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 	simp_data_clear(meme_simp);
 	simp_data_clear(font_simp);
 }
+
+int meme_data_clear(meme_file * meme)
+{
+	/*counters*/
+	int i, j;
+
+	return 0;
+}
+
+int action_data_clear(action_file * act)
+{
+	/*counter*/
+	int i;
+
+	free(act->out);
+	free(act->meme_id);
+	free(act->font_id);
+
+	for(i = 0; i < act->num_actions; i++)
+	{
+		free(act->actions[i].text_id);
+		free(act->actions[i].message);
+	}
+
+	free(act->actions);
+	free(act);
+
+	return 0;
+}

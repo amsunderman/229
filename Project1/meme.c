@@ -72,8 +72,8 @@ int main(int argc, char ** argv)
 	/*Free Memory*/
 	fclose(meme_file);
 	fclose(act_file);
-	/*meme_data_clear(meme_data);*/
-	/*action_data_clear(action_data);*/
+	meme_data_clear(meme_data);
+	action_data_clear(action_data);
 
 	/*return successfully*/
 	return 0;
