@@ -1287,6 +1287,29 @@ int meme_data_clear(meme_file * meme)
 	/*counters*/
 	int i, j;
 
+	for(i = 0; i < meme->num_memes; i++)
+	{
+		free(meme->memes[i].name);
+		free(meme->memes[i].image);
+		for(j = 0; j < meme->memes[i].num_locations; j++)
+		{
+			free(meme->memes[i].locations[j].name);
+		}
+		free(meme->memes[i].locations);
+	}
+
+	free(meme->memes);
+
+	for(i = 0; i < meme->num_fonts; i++)
+	{
+		free(meme->fonts[i].name);
+		free(meme->fonts[i].image);
+		/*free(meme->fonts[i].characters;*/
+	}
+
+	free(meme->fonts);
+	free(meme);
+
 	return 0;
 }
 
