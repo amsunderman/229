@@ -624,7 +624,7 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 		{
 			right_size += strlen(right_tokens[i]) + 1;
 		}
-		rebuild_right = malloc(right_size * sizeof(char));
+		rebuild_right = calloc(right_size, sizeof(char));
 		for(i = 0; i < right_num_tokens; i++)
 		{
 			strcat(rebuild_right, right_tokens[i]);
@@ -655,6 +655,9 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 			right);
 		return -1;
 	}
+
+	free(right_tokens);
+	free(left_tokens);
 
 	/*return successfully*/
 	return 0;
