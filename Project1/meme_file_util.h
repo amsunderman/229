@@ -22,10 +22,6 @@
 #include <stdlib.h>
 #endif
 
-#ifndef SIMP_UTIL
-#define SIMP_UTIL
-#endif
-
 /*typedef'd structure to store the information for a specific character in a FSF
  * file*/
 typedef struct character_struct
@@ -125,15 +121,21 @@ text_id find_text_id(meme_id * meme, char * text_id);
  * string meme_id*/
 meme_id * find_meme_id(meme_file * meme_data, char * meme_id);
 
+/*Function used to find a font structure withing a meme_file with name equal
+ * to given font_id string*/
 font * find_font(meme_file * meme_data, char * font_id);
 
+/*Function used to find a character structure with the represented character
+ * equal to c*/
 character * find_character(font * font_data, char c);
 
 /*Function used to execute ACT file actions*/
 int execute_actions(meme_file * meme_data, action_file * action_data);
 
+/*function used to clear meme_file data*/
 int meme_data_clear(meme_file * meme);
 
+/*Function used to clear action_file data*/
 int action_data_clear(action_file * act);
 
 #endif

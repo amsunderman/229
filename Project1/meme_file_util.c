@@ -12,7 +12,7 @@
  * into
  * @ret int: 0 = operation success, -1 = error (accompanied by print statement)
  * @author Adam Sunderman
- * @modified: 03/06/2014 */
+ * @modified: 03/10/2014 */
 int read_mem_file(FILE * fp, meme_file * meme_data)
 {
 	/*error value and counter*/
@@ -129,7 +129,7 @@ int read_mem_file(FILE * fp, meme_file * meme_data)
  * data into
  * @ret int: 0 = operation success, -1 = error (accompanied by print statement)
  * @author Adam Sunderman
- * @modified: 02/26/2014 */
+ * @modified: 03/10/2014 */
 int read_act_file(FILE * fp, action_file * action_data)
 {
 	/*error value and counter*/
@@ -234,7 +234,7 @@ int read_act_file(FILE * fp, action_file * action_data)
  * @ret font: font structure with all important info from fsf file will be
  * a default return (name = NULL) if operation failure
  * @author Adam Sunderman
- * @modified 03/06/2014*/
+ * @modified 03/10/2014*/
 font read_fsf_file(char * fsf_file_name)
 {
 	/*File pointer to fsf file*/
@@ -362,7 +362,7 @@ font read_fsf_file(char * fsf_file_name)
  * @param meme_file * meme_data: meme_file structure to insert data into
  * @ret int: 0 = operation success, -1 = error(accompanied by print statement)
  * @author Adam Sunderman
- * @modified 03/06/2014 */
+ * @modified 03/10/2014 */
 int mem_parse_line(char * left, char * right, meme_file * meme_data)
 {
 	/*strings used to tokenize left and right strings using " " as the
@@ -534,7 +534,7 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
  * @param action_file * action_data: action_file structure to insert data into
  * @ret int: 0 = operation success, -1 = error(accompanied by print statement)
  * @author Adam Sunderman
- * @modified 03/05/2014 */
+ * @modified 03/10/2014 */
 int act_parse_line(char * left, char * right, action_file * action_data)
 {
 	/*strings used to tokenize left and right strings using " " as the
@@ -673,7 +673,7 @@ int act_parse_line(char * left, char * right, action_file * action_data)
  * @param font * font_data: font structure to insert data into
  * @ret int: 0 = operation success, -1 = error(accompanied by print statement)
  * @author Adam Sunderman
- * @modified 03/06/2014 */
+ * @modified 03/10/2014 */
 int fsf_parse_line(char * left, char * right, font * font_data)
 {
 	/*strings used to tokenize left and right strings using " " as the
@@ -843,9 +843,9 @@ int fsf_parse_line(char * left, char * right, font * font_data)
  * right line
  * @param int * num_left_tokens: int to store number of left tokens
  * @param int * num_right_tokens: int to store number of right tokens
- * @ret int: 0 = operation success -1 = operation failure
+ * @ret int: char**: right_tokens to return after re-allocation
  * @author Adam Sunderman
- * @modified 03/05/2014*/
+ * @modified 03/10/2014*/
 char** tokenize_line(char * left, char * right, char ** left_tokens, 
 	char ** right_tokens, int * left_num_tokens, 
 	int * right_num_tokens)
@@ -937,7 +937,7 @@ char** tokenize_line(char * left, char * right, char ** left_tokens,
  * will return default_return (name = NULL)  if the text_id was not found or if 
  * an error was encountered
  * @author: Adam Sunderman
- * @modified: 03/05/2014 */
+ * @modified: 03/10/2014 */
 text_id find_text_id(meme_id * meme, char * text_id_name)
 {
 	/*counter*/
@@ -983,7 +983,7 @@ text_id find_text_id(meme_id * meme, char * text_id_name)
  * provided string. will return NULL if the meme_id was not found or if 
  * an error was encountered
  * @author: Adam Sunderman
- * @modified 03/05/2014 */
+ * @modified 03/10/2014 */
 meme_id * find_meme_id(meme_file * meme_data, char * meme_id_name)
 {
 	/*counter*/
@@ -1016,6 +1016,13 @@ meme_id * find_meme_id(meme_file * meme_data, char * meme_id_name)
 	return NULL;
 }
 
+/**Function used to find a font structure within a meme_file with name equal
+ * to given font_id string
+ * @param meme_file * meme_data: meme_file to search for font_ID
+ * @param char * font_id: font_id to find
+ * @ret font *: font with font_id if success, null if failure
+ * @author Adam Sunderman
+ * @modified 03/10/14*/
 font * find_font(meme_file * meme_data, char* font_id)
 {
 	/*counter*/
@@ -1048,6 +1055,13 @@ font * find_font(meme_file * meme_data, char* font_id)
 	return NULL;
 }
 
+/**Function used to find a character structure with the represented character
+ * equal to c
+ * @param font * font_data: font structure to find character c in
+ * @param char c: character to find
+ * @ret charachter *: character with c if success, null if not
+ * @author Adam Sunderman
+ * @modified 03/10/14*/
 character * find_character(font * font_data, char c)
 {
 	/*counter*/
@@ -1069,7 +1083,12 @@ character * find_character(font * font_data, char c)
 	return NULL;
 }
 
-/**TODO*/
+/**Function used to execute ACT file actions
+ * @param meme_file * meme_data: structure that contains meme info
+ * @param action_file * action_data: structure that contains actions
+ * @ret int: 0 = operation success, -1 = failure
+ * @author Adam Sunderman
+ * @modified 03/10/14*/
 int execute_actions(meme_file * meme_data, action_file * action_data)
 {
 	/*structures to hold simp data*/
@@ -1294,6 +1313,11 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 	simp_data_clear(crop_temp);
 }
 
+/*function used to clear meme_file data
+ * @param meme_file * meme: meme_file to free
+ * @ret int: 0 = operation success, -1 = failure
+ * @author Adam Sunderman
+ * @modified 03/10/14*/
 int meme_data_clear(meme_file * meme)
 {
 	/*counters*/
@@ -1325,6 +1349,11 @@ int meme_data_clear(meme_file * meme)
 	return 0;
 }
 
+/**Function used to clear action_file data
+ * @param action_file * act: action file to free
+ * @ret int: 0 = operation success, -1 = failure
+ * @author Adam Sunderman
+ * @modified 03/10/14*/
 int action_data_clear(action_file * act)
 {
 	/*counter*/
