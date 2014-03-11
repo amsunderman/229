@@ -113,7 +113,7 @@ int fsf_parse_line(char * left, char * right, font * font_data);
 
 /*function used to tokenize arguments to the left and right of : in FSF,
  * MEM and ACT files*/
-int tokenize_line(char * left, char * right, char ** left_tokens, 
+char** tokenize_line(char * left, char * right, char ** left_tokens, 
 	char ** right_tokens, int * left_num_tokens, 
 	int * right_num_tokens);
 

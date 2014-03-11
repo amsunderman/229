@@ -162,7 +162,7 @@ int read_act_file(FILE * fp, action_file * action_data)
 	action_data->out = NULL;
 	action_data->meme_id = NULL;
 	action_data->font_id = NULL;
-	action_data->actions = malloc(START_TOKENS * sizeof(action));
+	action_data->actions = calloc(START_TOKENS, sizeof(action));
 	action_data->num_actions = 0;
 
 	/*get first line*/
@@ -276,7 +276,7 @@ font read_fsf_file(char * fsf_file_name)
 	/*initial memory allocation for font members*/
 	ret.name = NULL;
 	ret.image = NULL;
-	ret.characters = malloc(START_TOKENS * sizeof(character));
+	ret.characters = calloc(START_TOKENS, sizeof(character));
 	ret.num_characters = 0;
 
 	/*get first line*/
@@ -348,6 +348,9 @@ font read_fsf_file(char * fsf_file_name)
 	/*close fsf file*/
 	fclose(fp);
 
+	/*free current line*/
+	free(current_line);
+
 	/*return successfully*/
 	return ret;
 }
@@ -364,8 +367,8 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 {
 	/*strings used to tokenize left and right strings using " " as the
  	* delimiter*/
-	char** left_tokens = malloc(START_TOKENS * sizeof(char*));
-	char** right_tokens = malloc(START_TOKENS * sizeof(char*));
+	char** left_tokens = calloc(START_TOKENS, sizeof(char*));
+	char** right_tokens = calloc(START_TOKENS, sizeof(char*));
 
 	/*store number of right and left tokens*/
 	int left_num_tokens, right_num_tokens;
@@ -375,7 +378,7 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 	int l_index;
 
 	/*max number of locations for currently allocated memory*/
-	int max_locations = START_TOKENS;
+	static int max_locations = START_TOKENS;
 
 	/*temp meme_id for realloc of locations*/
 	text_id * temp;
@@ -384,14 +387,14 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 	meme_id * current_meme_id;
 
 	/*tokenize line*/
-	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
-		&right_num_tokens);
+	right_tokens = tokenize_line(left, right, left_tokens, right_tokens, 
+		&left_num_tokens, &right_num_tokens);
 
 	/*is this line MEMES?*/
 	if((strcmp(left_tokens[0], "MEMES") == 0) && left_num_tokens == 1)
 	{
 		/*allocate memory for meme id's*/
-		meme_data->memes = malloc(right_num_tokens * sizeof(meme_id));
+		meme_data->memes = calloc(right_num_tokens, sizeof(meme_id));
 
 		/*update num_memes for meme_file structure*/
 		meme_data->num_memes = right_num_tokens;
@@ -400,13 +403,13 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 		for(i = 0; i < right_num_tokens; i++)
 		{
 			/*set name*/
-			meme_data->memes[i].name = malloc(
-				(strlen(right_tokens[i]) + 1) * sizeof(char));
+			meme_data->memes[i].name = calloc(
+				(strlen(right_tokens[i]) + 1), sizeof(char));
 			strcpy(meme_data->memes[i].name, right_tokens[i]);
 
 			/*initialize image and location data*/
 			meme_data->memes[i].image = NULL;
-			meme_data->memes[i].locations = malloc(START_TOKENS * 
+			meme_data->memes[i].locations = calloc(START_TOKENS, 
 				sizeof(text_id));
 			meme_data->memes[i].num_locations = 0;
 		}
@@ -416,7 +419,7 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 	else if((strcmp(left_tokens[0], "FONTS") == 0) && left_num_tokens == 1)
 	{
 		/*allocate memory for fonts*/
-		meme_data->fonts = malloc(right_num_tokens * sizeof(font));
+		meme_data->fonts = calloc(right_num_tokens, sizeof(font));
 
 		/*update num_fonts for meme file structure*/
 		meme_data->num_fonts = right_num_tokens;
@@ -459,8 +462,8 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 				return -1;
 			}
 			/*assign image to meme_id*/
-			current_meme_id->image = malloc((
-				strlen(right_tokens[0]) + 1) * sizeof(char));
+			current_meme_id->image = calloc((
+				strlen(right_tokens[0]) + 1), sizeof(char));
 			strcpy(current_meme_id->image, right_tokens[0]);
 		}
 	}
@@ -501,8 +504,8 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 		}
 
 		/*store location data*/
-		current_meme_id->locations[l_index].name = malloc((
-			strlen(left_tokens[1]) + 1) * sizeof(char));
+		current_meme_id->locations[l_index].name = calloc((
+			strlen(left_tokens[1]) + 1), sizeof(char));
 		strcpy(current_meme_id->locations[l_index].name, 
 			left_tokens[1]);
 		current_meme_id->locations[l_index].x = atoi(right_tokens[0]);
@@ -536,8 +539,8 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 {
 	/*strings used to tokenize left and right strings using " " as the
  	* delimiter*/
-	char** left_tokens = malloc(START_TOKENS * sizeof(char*));
-	char** right_tokens = malloc(START_TOKENS * sizeof(char*));
+	char** left_tokens = calloc(START_TOKENS, sizeof(char*));
+	char** right_tokens = calloc(START_TOKENS, sizeof(char*));
 
 	/*store number of right and left tokens*/
 	int left_num_tokens, right_num_tokens;
@@ -552,21 +555,21 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 	char * rebuild_right = NULL;
 
 	/*max number of actions for currently allocated memory*/
-	int max_actions = START_TOKENS;
+	static int max_actions = START_TOKENS;
 
 	/*temp variable for realloc of actions*/
 	action * temp;
 
 	/*tokenize line*/
-	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
-		&right_num_tokens);
+	right_tokens = tokenize_line(left, right, left_tokens, right_tokens, 
+		&left_num_tokens, &right_num_tokens);
 
 	/*is this line OUTFILE*/
 	if((strcmp(left_tokens[0], "OUTFILE") == 0) && left_num_tokens == 1 && 
 		right_num_tokens == 1)
 	{
 		/*set name of outfile*/
-		action_data->out = malloc((strlen(right_tokens[0]) + 1) * 
+		action_data->out = calloc((strlen(right_tokens[0]) + 1), 
 			sizeof(char));
 		strcpy(action_data->out, right_tokens[0]);
 	}
@@ -576,7 +579,7 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 		&& right_num_tokens == 1)
 	{
 		/*set meme_id string*/
-		action_data->meme_id = malloc((strlen(right_tokens[0]) + 1) * 
+		action_data->meme_id = calloc((strlen(right_tokens[0]) + 1), 
 			sizeof(char));
 		strcpy(action_data->meme_id, right_tokens[0]);
 	}
@@ -586,7 +589,7 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 		&& right_num_tokens == 1)
 	{
 		/*set font_id string*/
-		action_data->font_id = malloc((strlen(right_tokens[0]) + 1) * 
+		action_data->font_id = calloc((strlen(right_tokens[0]) + 1), 
 			sizeof(char));
 		strcpy(action_data->font_id, right_tokens[0]);
 	}
@@ -615,8 +618,8 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 		}
 
 		/*store action data*/
-		action_data->actions[a_index].text_id = malloc((
-			strlen(left_tokens[0]) + 1) * sizeof(char));
+		action_data->actions[a_index].text_id = calloc((
+			strlen(left_tokens[0]) + 1), sizeof(char));
 		strcpy(action_data->actions[a_index].text_id, left_tokens[0]);
 
 		/*concatenate right tokens*/
@@ -642,8 +645,8 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 		}
 
 		/*store message*/
-		action_data->actions[a_index].message = malloc((
-			strlen(rebuild_right) + 1) * sizeof(char));
+		action_data->actions[a_index].message = calloc((
+			strlen(rebuild_right) + 1), sizeof(char));
 		strcpy(action_data->actions[a_index].message, rebuild_right);
 		free(rebuild_right);
 	}
@@ -675,12 +678,12 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 {
 	/*strings used to tokenize left and right strings using " " as the
  	* delimiter*/
-	char** left_tokens = malloc(START_TOKENS * sizeof(char*));
-	char** right_tokens = malloc(START_TOKENS * sizeof(char*));
+	char** left_tokens = calloc(START_TOKENS, sizeof(char*));
+	char** right_tokens = calloc(START_TOKENS, sizeof(char*));
 
 	/*temp string and character used to store substring and character of 
  	* CHARACTERc identifier*/
-	char* character_temp;
+	char character_temp[10] = "CHARACTE";
 	char c;
 
 	/*store number of right and left tokens*/
@@ -694,10 +697,10 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	int c_index;
 
 	/*max number of characters for currently allocated memory*/
-	int max_characters = START_TOKENS;
+	static int max_characters = START_TOKENS;
 
 	/*temp character * for reallocation*/
-	character * temp;
+	character** temp = calloc(1, sizeof(character*));
 
 	/*catch "Character'space'" condition pre_tokenize*/
 	if(strcmp(left, "CHARACTER ") == 0)
@@ -706,8 +709,8 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	}
 
 	/*tokenize line*/
-	tokenize_line(left, right, left_tokens, right_tokens, &left_num_tokens, 
-		&right_num_tokens);
+	right_tokens = tokenize_line(left, right, left_tokens, right_tokens, 
+		&left_num_tokens, &right_num_tokens);
 
 	/*catch "Character'space'" condition post_tokenize*/
 	if(space == 1)
@@ -718,8 +721,8 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 
 	/*temp string to store everyting but last character in left_tokens[0]
 	* (to test for the word CHARACTER)*/
-	character_temp = calloc(strlen(left_tokens[0]), sizeof(char));
-	strncpy(character_temp, left_tokens[0], (strlen(left_tokens[0])-1));
+	memcpy(character_temp, left_tokens[0], 9);
+	character_temp[10] = '\0';
 	c = left_tokens[0][strlen(left_tokens[0]) - 1];
 
 	/*is it NAME?*/
@@ -735,8 +738,8 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 		/*else save font name*/
 		else
 		{
-			font_data->name = malloc((strlen(right_tokens[0]) + 1) 
-				* sizeof(char));
+			font_data->name = calloc((strlen(right_tokens[0]) + 1)
+				, sizeof(char));
 			strcpy(font_data->name, right_tokens[0]);
 		}
 	}
@@ -754,8 +757,8 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 		/*else save font image*/
 		else
 		{
-			font_data->image = malloc((strlen(right_tokens[0] + 1)) 
-				* sizeof(char));
+			font_data->image = calloc((strlen(right_tokens[0]) + 1)
+				, sizeof(char));
 			strcpy(font_data->image, right_tokens[0]);
 		}
 	}
@@ -771,6 +774,7 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 				"format for CHARACTER%c\n", c);
 			return -1;
 		}
+
 		/*else save character structure*/
 		else
 		{
@@ -784,17 +788,19 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 			/*check num_characters vs max_characters*/
 			if(font_data->num_characters == max_characters)
 			{
+				temp[0] = (character *) calloc(
+					max_characters, sizeof(character));
+				memcpy(temp[0], font_data->characters, 
+					((max_characters - 1) 
+					* sizeof(character)));
 				max_characters += TOKEN_INCREASE_RATE;
-				font_data->characters = 
-					realloc(font_data->characters, 
-					max_characters * sizeof(character));
-				if(!font_data->characters)
-				{
-					fprintf(stderr, "fsf_parse_line: " 
-						"failed to allocate memory\n");
-					return -1;
-				}
-				
+				free(font_data->characters);
+				font_data->characters = calloc(
+					max_characters, sizeof(character));
+				memcpy(font_data->characters, temp[0], 
+					((max_characters - TOKEN_INCREASE_RATE 
+					- 1) * sizeof(character)));
+				free(temp[0]);
 			}
 
 			/*store character data*/
@@ -807,7 +813,7 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 				atoi(right_tokens[2]);
 			font_data->characters[c_index].h = 
 				atoi(right_tokens[3]);
-		}
+		}	
 	}
 
 	/*invalid line*/
@@ -821,6 +827,7 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 	/*free memory*/
 	free(left_tokens);
 	free(right_tokens);
+	free(temp);
 
 	/*return successfully*/
 	return 0;
@@ -839,12 +846,12 @@ int fsf_parse_line(char * left, char * right, font * font_data)
  * @ret int: 0 = operation success -1 = operation failure
  * @author Adam Sunderman
  * @modified 03/05/2014*/
-int tokenize_line(char * left, char * right, char ** left_tokens, 
+char** tokenize_line(char * left, char * right, char ** left_tokens, 
 	char ** right_tokens, int * left_num_tokens, 
 	int * right_num_tokens)
 {
 	/*temp pointer for realloc*/
-	char** temp;
+	char*** temp = calloc(1, sizeof(char**));
 
 	/*ints to store max number of tokens*/
 	int left_max_tokens = START_TOKENS;
@@ -871,16 +878,15 @@ int tokenize_line(char * left, char * right, char ** left_tokens,
  		* must re-allocate*/
 		if(*left_num_tokens == left_max_tokens)
 		{
+			temp[0] = calloc(left_max_tokens, sizeof(char*));
+			memcpy(temp[0], left_tokens, ((left_max_tokens)
+				* sizeof(char*)));
 			left_max_tokens += TOKEN_INCREASE_RATE;
-			temp = realloc(left_tokens, left_max_tokens * 
-				sizeof(char*));
-			if(!temp)
-			{
-				fprintf(stderr, "mem_parse_line: failed to " 
-					"allocate memory\n");
-				return -1;
-			}
-			left_tokens = temp;
+			free(left_tokens);
+			left_tokens = calloc(left_max_tokens, sizeof(char*));
+			memcpy(left_tokens, temp[0], ((left_max_tokens - 
+				TOKEN_INCREASE_RATE) * sizeof(char*)));
+			free(temp[0]);
 		}
 
 		/*move onto next token (will be NULL if no more exist)*/
@@ -901,24 +907,26 @@ int tokenize_line(char * left, char * right, char ** left_tokens,
  		* must re-allocate*/
 		if(*right_num_tokens == right_max_tokens)
 		{
+			temp[0] = calloc(right_max_tokens, sizeof(char*));
+			memcpy(temp[0], right_tokens, ((right_max_tokens) 
+				* sizeof(char*)));
 			right_max_tokens += TOKEN_INCREASE_RATE;
-			temp = realloc(right_tokens, right_max_tokens * 
-				sizeof(char*));
-			if(!temp)
-			{
-				fprintf(stderr, "mem_parse_line: failed to " 
-					"allocate memory\n");
-				return -1;
-			}
-			right_tokens = temp;
+			free(right_tokens);
+			right_tokens = calloc(right_max_tokens, sizeof(char*));
+			memcpy(right_tokens, temp[0], ((right_max_tokens - 
+				TOKEN_INCREASE_RATE) * sizeof(char*)));
+			free(temp[0]);
 		}
 
 		/*move onto next token (will be NULL if no more exist)*/
 		right_tokens[j] = strtok(NULL, " ");
 	}
 
+	/*free*/
+	free(temp);
+
 	/*return successfully*/
-	return 0;
+	return right_tokens;
 }
 
 /**Function used to return a text_id structure with name equal to the provided
@@ -1065,9 +1073,9 @@ character * find_character(font * font_data, char c)
 int execute_actions(meme_file * meme_data, action_file * action_data)
 {
 	/*structures to hold simp data*/
-	struct simp_file * meme_simp = malloc(sizeof(struct simp_file));
-	struct simp_file * font_simp = malloc(sizeof(struct simp_file));
-	struct simp_file * crop_temp = malloc(sizeof(struct simp_file));
+	struct simp_file * meme_simp = calloc(1, sizeof(struct simp_file));
+	struct simp_file * font_simp = calloc(1, sizeof(struct simp_file));
+	struct simp_file * crop_temp = calloc(1, sizeof(struct simp_file));
 
 	/*simp file pointers*/
 	FILE * out_fp;
@@ -1261,7 +1269,7 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 			simp_data_clear(crop_temp);
 
 			/*realloc crop data for next run*/
-			crop_temp = malloc(sizeof(struct simp_file));
+			crop_temp = calloc(1, sizeof(struct simp_file));
 
 			/*updata cur_x for next run*/
 			cur_x += c->w;
@@ -1283,6 +1291,7 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 	/*free simp memory*/
 	simp_data_clear(meme_simp);
 	simp_data_clear(font_simp);
+	simp_data_clear(crop_temp);
 }
 
 int meme_data_clear(meme_file * meme)
@@ -1307,7 +1316,7 @@ int meme_data_clear(meme_file * meme)
 	{
 		free(meme->fonts[i].name);
 		free(meme->fonts[i].image);
-		/*free(meme->fonts[i].characters;*/
+		free(meme->fonts[i].characters);
 	}
 
 	free(meme->fonts);
