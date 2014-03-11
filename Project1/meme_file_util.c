@@ -401,7 +401,7 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 		{
 			/*set name*/
 			meme_data->memes[i].name = malloc(
-				strlen((right_tokens[i]) + 1) * sizeof(char));
+				(strlen(right_tokens[i]) + 1) * sizeof(char));
 			strcpy(meme_data->memes[i].name, right_tokens[i]);
 
 			/*initialize image and location data*/
@@ -501,8 +501,8 @@ int mem_parse_line(char * left, char * right, meme_file * meme_data)
 		}
 
 		/*store location data*/
-		current_meme_id->locations[l_index].name = malloc(
-			strlen(left_tokens[1] + 1) * sizeof(char));
+		current_meme_id->locations[l_index].name = malloc((
+			strlen(left_tokens[1]) + 1) * sizeof(char));
 		strcpy(current_meme_id->locations[l_index].name, 
 			left_tokens[1]);
 		current_meme_id->locations[l_index].x = atoi(right_tokens[0]);
@@ -547,6 +547,9 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 	int a_index;
 	int right_size = 0;
 	int temp_length = 0;
+
+	/*rebuild right string for message*/
+	char * rebuild_right = NULL;
 
 	/*max number of actions for currently allocated memory*/
 	int max_actions = START_TOKENS;
@@ -617,15 +620,14 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 		strcpy(action_data->actions[a_index].text_id, left_tokens[0]);
 
 		/*concatenate right tokens*/
-		right = NULL;
 		for(i = 0; i < right_num_tokens; i++)
 		{
 			right_size += strlen(right_tokens[i]) + 1;
 		}
-		right = malloc(right_size * sizeof(char));
+		rebuild_right = malloc(right_size * sizeof(char));
 		for(i = 0; i < right_num_tokens; i++)
 		{
-			strcat(right, right_tokens[i]);
+			strcat(rebuild_right, right_tokens[i]);
 			if(i == right_num_tokens - 1)
 			{
 				/*no space*/
@@ -633,16 +635,17 @@ int act_parse_line(char * left, char * right, action_file * action_data)
 			else
 			{
 				/*space*/
-				temp_length = strlen(right);
-				right[temp_length] = ' ';
-				right[temp_length + 1] = '\0';
+				temp_length = strlen(rebuild_right);
+				rebuild_right[temp_length] = ' ';
+				rebuild_right[temp_length + 1] = '\0';
 			}
 		}
 
 		/*store message*/
 		action_data->actions[a_index].message = malloc((
-			strlen(right) + 1) * sizeof(char));
-		strcpy(action_data->actions[a_index].message, right);
+			strlen(rebuild_right) + 1) * sizeof(char));
+		strcpy(action_data->actions[a_index].message, rebuild_right);
+		free(rebuild_right);
 	}
 
 	/*invalid line*/
@@ -712,7 +715,7 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 
 	/*temp string to store everyting but last character in left_tokens[0]
 	* (to test for the word CHARACTER)*/
-	character_temp = malloc(strlen(left_tokens[0]));
+	character_temp = calloc(strlen(left_tokens[0]), sizeof(char));
 	strncpy(character_temp, left_tokens[0], (strlen(left_tokens[0])-1));
 	c = left_tokens[0][strlen(left_tokens[0]) - 1];
 
@@ -779,15 +782,16 @@ int fsf_parse_line(char * left, char * right, font * font_data)
 			if(font_data->num_characters == max_characters)
 			{
 				max_characters += TOKEN_INCREASE_RATE;
-				temp = realloc(font_data->characters, 
+				font_data->characters = 
+					realloc(font_data->characters, 
 					max_characters * sizeof(character));
-				if(!temp)
+				if(!font_data->characters)
 				{
 					fprintf(stderr, "fsf_parse_line: " 
 						"failed to allocate memory\n");
 					return -1;
 				}
-				font_data->characters = temp;
+				
 			}
 
 			/*store character data*/
@@ -1082,7 +1086,6 @@ int execute_actions(meme_file * meme_data, action_file * action_data)
 	text_id t;
 	meme_id * m;
 	font * f;
-	
 
 	/*open out file*/
 	out_fp = fopen(action_data->out, "wb");
