@@ -1068,7 +1068,11 @@ character * find_character(font * font_data, char c)
 	int i;
 
 	/*general error checking*/
-	/*TODO*/
+	if(!font_data)
+	{
+		fprintf(stderr, "find_character: font_data is null\n");
+		return NULL;
+	}
 
 	/*look through characters within font_data to find the one that matches
 	* c*/
@@ -1323,6 +1327,12 @@ int meme_data_clear(meme_file * meme)
 	/*counters*/
 	int i, j;
 
+	if(!meme)
+	{
+		fprintf(stderr, "meme_data_clear: meme is null\n");
+		return -1;
+	}
+
 	for(i = 0; i < meme->num_memes; i++)
 	{
 		free(meme->memes[i].name);
@@ -1334,7 +1344,8 @@ int meme_data_clear(meme_file * meme)
 		free(meme->memes[i].locations);
 	}
 
-	free(meme->memes);
+	if(meme->memes)
+		free(meme->memes);
 
 	for(i = 0; i < meme->num_fonts; i++)
 	{
@@ -1343,7 +1354,8 @@ int meme_data_clear(meme_file * meme)
 		free(meme->fonts[i].characters);
 	}
 
-	free(meme->fonts);
+	if(meme->fonts)
+		free(meme->fonts);
 	free(meme);
 
 	return 0;
@@ -1359,9 +1371,18 @@ int action_data_clear(action_file * act)
 	/*counter*/
 	int i;
 
-	free(act->out);
-	free(act->meme_id);
-	free(act->font_id);
+	if(!act)
+	{
+		fprintf(stderr, "action_data_clear: act is null\n");
+		return -1;
+	}
+
+	if(act->out)
+		free(act->out);
+	if(act->meme_id)
+		free(act->meme_id);
+	if(act->font_id)
+		free(act->font_id);
 
 	for(i = 0; i < act->num_actions; i++)
 	{
@@ -1369,7 +1390,8 @@ int action_data_clear(action_file * act)
 		free(act->actions[i].message);
 	}
 
-	free(act->actions);
+	if(act->actions)
+		free(act->actions);
 	free(act);
 
 	return 0;

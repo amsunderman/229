@@ -40,7 +40,8 @@ print at that text_id location on top of the meme being used.
 Assumptions:
 My file treats the input ACT, MEM, and FSF files strictly according to the 
 provided examples. If any line is invalid, the whole program will halt and 
-print the reason it stopped to stderr.
+print the reason it stopped to stderr. My code will not handle ':' as a valid
+represented character in fsf files.
 
 File Listing:
 
