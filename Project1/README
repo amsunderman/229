@@ -3,7 +3,54 @@ NetID: asu1351
 
 PART B INFORMATION
 
-/*TODO*/
+Font Storing Structure:
+For font storing, I created a typedef'd font structure in meme_file_util.h that
+stores the font_id, a string containing the name of the .simp font file, an 
+array of characters (also a typedef'd object that stores the represented 
+character and its x, y, w, and h values) and an integer to keep track of the 
+number of characters.
+
+Meme File Storing Structure:
+For meme file storing, I created a typedef'd meme_file structure in 
+meme_file_util.h that stores meme_id's (also typedef'd, defined below), fonts 
+(defined above), and integers to store the number of memes and the number of 
+fonts.
+
+Meme ID Storing Structure:
+To store meme id's, I created a typedef'd meme_id structure in meme_file_util.h 
+that stores the name, the name of the .simp image that stores the image data, 
+an array of text_id's (also typedef'd: defined below) and an integer that 
+stores the number of text_id's.
+
+Text ID Storing Structure:
+To store text id's, I created a typedef'd text_id structure in meme_file_util.h
+that stores the name of the text ID and the x and y coordinates of the text_id.
+
+Action File Storing Structure:
+For action file storing, I created a typedef'd action_file structure in 
+meme_file_util.h that stores the name of the simp file to write to, the name of
+the meme_id to use, the name of the font_id to use, an array of actions (also 
+typedef'd: defined below)
+
+Action Storing Structure:
+For storage of individual actions, I created a typedef'd action structure in 
+meme_file_util.h that stores the name of the text_id to use and the message to 
+print at that text_id location on top of the meme being used.
+
+Assumptions:
+My file treats the input ACT, MEM, and FSF files strictly according to the 
+provided examples. If any line is invalid, the whole program will halt and 
+print the reason it stopped to stderr.
+
+File Listing:
+
+meme_file_util.c: source file that contains methods for interacting with ACT,
+FSF and MEM files as well as the methods to execute specified actions in ACT
+files.
+
+meme.c: source file for the executable meme. parses arguments and then calls
+methods from meme_file_util.c to read in the MEM file, read in the ACT file, 
+and then execute actions provided in the ACT file.
 
 PART A INFORMATION
 
