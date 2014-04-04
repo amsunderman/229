@@ -21,11 +21,6 @@ void Simulation::setName(string givenName)
     name = givenName;
 }
 
-void Simulation::setGen(int gen)
-{
-    generation = gen;
-}
-
 void Simulation::setStartGen(int sGen)
 {
     startGen = sGen;
@@ -57,7 +52,12 @@ int Simulation::getGen()
     return generation;
 }
 
-int Simulation::getStartGen()
+void Simulation::advanceGen()
 {
-    return startGen;
+    /*TODO*/
+}
+
+void Simulation::draw()
+{
+    /*TODO*/
 }
