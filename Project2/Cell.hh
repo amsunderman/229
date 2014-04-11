@@ -23,7 +23,7 @@ class Cell
         bool nextState; //boolean to stare cell's state next gen
         list<Cell> neighbors; //list of neighbors for cell
     public:
-        void init(); //initialize cell (set neighbors)
+        void init(bool alive); //initialize cell (set neighbors)
         void setAlive(); //mark cell as alive
         void setDead(); //mark cell as dead
         bool isAlive(); //return alive status

@@ -2,6 +2,7 @@
 #define CMDVIS
 
 #include "View.hh"
+#include "GameBoard.hh"
 
 /**View that outputs to command line (extension of View object)
  * @author Adam Sunderman
@@ -26,7 +27,7 @@ class CmdView:public View
         void setDeadChar(char givenDead); //set the character used to represent a dead cell
         void setAliveColor(unsigned char rVal, unsigned char gVal, unsigned char bVal); //set color for alive cells
         void setDeadColor(unsigned char rVal, unsigned char gVal, unsigned char bVal); //set color for dead cells
-        void draw(); //output cell grid to stdout
+        void draw(GameBoard game); //output cell grid to stdout
 };
 
 #endif
