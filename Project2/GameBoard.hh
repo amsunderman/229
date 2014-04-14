@@ -2,6 +2,7 @@
 #define GAMEBOARD
 
 #include "Cell.hh"
+#include "GridDimension.hh"
 
 #ifndef IOSTREAM
 #define IOSTREAM
@@ -22,10 +23,19 @@ class GameBoard
 {
         private:
             vector<vector<Cell> > grid; //2d vector to store grid of Cells
+            int x_offset;
+            int y_offset;
+            int x_size;
+            int y_size;
             int population; //keeps track of population (alive cells)
+
         public:
+            // initialize gameboard
+            int init(GridDimension terrain, vector<pair<int, int> > * coordinates, bool alive);
             int getPopulation(); //returns current population
-            void advanceGen(); //advances generations
-};  
+            int advanceGen(); //advances generations
+            Cell getCell(int x, int y); //get cell at coordinates x, y
+            vector<pair<int, int> > getAliveCells(); //gets a vector list of all alive cell coordinates
+};
 
 #endif

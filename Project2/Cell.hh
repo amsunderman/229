@@ -6,9 +6,9 @@
 #include <iostream>
 #endif
 
-#ifndef LIST
-#define LIST
-#include <list>
+#ifndef VECTOR
+#define VECTOR
+#include <vector>
 #endif
 
 using namespace std;
@@ -21,12 +21,15 @@ class Cell
     private:
         bool alive; //boolean to store cell's state
         bool nextState; //boolean to stare cell's state next gen
-        list<Cell> neighbors; //list of neighbors for cell
+        vector<Cell *> neighbors; //list of neighbors for cell
     public:
-        void init(bool alive); //initialize cell (set neighbors)
+        Cell(); //default constructor
+        Cell(bool alive); //initilazation constructor
+        void addNeighbor(Cell * neighbor); //adds neighbor to vector
         void setAlive(); //mark cell as alive
         void setDead(); //mark cell as dead
         bool isAlive(); //return alive status
+        bool stayAlive(); //return if cell is alive next gen
         bool aliveNextGen(); //evaluate if cell will be alive next gen
 };
 

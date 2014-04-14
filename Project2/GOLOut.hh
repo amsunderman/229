@@ -9,7 +9,8 @@
 class GOLOut:public View
 {
     public:
-        void draw(); //outputs simulation data to GOL file
+        GOLOut(); //default constructor
+        int draw(GameBoard game, string name, GridDimension terrain, GridDimension window); //outputs gol data
 };
 
 #endif

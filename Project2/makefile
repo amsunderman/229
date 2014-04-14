@@ -4,17 +4,19 @@
 CC=g++
 
 #all executables
-ALL=life
+ALL=life lifegui
 
 #executables
 all:$(ALL)
 
-life: life.o Simulation.o GridDimension.o Cell.o GameBoard.o View.o CmdView.o GOLOut.o
+life: Simulation.o GridDimension.o Cell.o GameBoard.o View.o CmdView.o GOLOut.o life.cc
+	$(CC) -c -D GUI=0 life.cc
 	$(CC) -o life life.o Simulation.o GridDimension.o Cell.o GameBoard.o View.o CmdView.o GOLOut.o
+lifegui: Simulation.o GridDimension.o Cell.o GameBoard.o View.o CmdView.o GOLOut.o life.cc
+	$(CC) -c -D GUI=1 life.cc
+	$(CC) -o lifegui life.o Simulation.o GridDimension.o Cell.o GameBoard.o View.o CmdView.o GOLOut.o
 
 #object files
-life.o: life.cc
-	$(CC) -c life.cc
 Simulation.o: Simulation.cc Simulation.hh
 	$(CC) -c Simulation.cc
 GridDimension.o: GridDimension.cc GridDimension.hh
