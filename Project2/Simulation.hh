@@ -5,6 +5,7 @@
 #include "View.hh"
 #include "CmdView.hh"
 #include "GOLOut.hh"
+#include "GUIOut.hh"
 #include "GameBoard.hh"
 
 #ifndef IOSTREAM
@@ -65,6 +66,7 @@ class Simulation
         Simulation(); //default constructor
         Simulation(string GOL_in, View * out, bool override_tx, bool override_ty, bool override_wx, bool override_wy,
             int txLow, int txHigh, int tyLow, int tyHigh, int wxLow, int wxHigh, int wyLow, int wyHigh, int sGen);
+        ~Simulation(); //deconstructor
         int readGOLFile(); //reads in GOL file and sets simulation values
         int run(); //runs simulation to startGen
         void setName(string name); //sets name of simulation

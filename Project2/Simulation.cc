@@ -61,6 +61,11 @@ Simulation::Simulation(string GOL_in, View * out, bool override_tx, bool overrid
     display = out;
 }
 
+Simulation::~Simulation()
+{
+    delete coordinates;
+}
+
 /**Method used to read in GOL file.
  * @param void
  * @ret int: 0 = operation success; -1 = failure
@@ -280,16 +285,25 @@ int Simulation::readGOLFile()
             {
                 if(!windowIn)
                 {
-                    this->window = this->terrain;
-                }
-                else
-                {
-                    if((window.getXLow() < terrain.getXLow()) || (window.getXHigh() > terrain.getXHigh()) ||
-                        (window.getYLow() < terrain.getYLow()) || (window.getYHigh() > terrain.getYHigh()))
+                    if(!override_wx)
                     {
-                        this->window = this->terrain;
+                        window.setXLow(terrain.getXLow());
+                        window.setXHigh(terrain.getXHigh());
+                    }
+                    if(!override_wy)
+                    {
+                        window.setYLow(terrain.getYLow());
+                        window.setYHigh(terrain.getYHigh());
                     }
                 }
+
+                if((window.getXLow() < terrain.getXLow()) || (window.getXHigh() > terrain.getXHigh()) ||
+                    (window.getYLow() < terrain.getYLow()) || (window.getYHigh() > terrain.getYHigh()))
+                {
+                    this->window = this->terrain;
+                }
+
+                delete fin;
                 return 0;
             }
 

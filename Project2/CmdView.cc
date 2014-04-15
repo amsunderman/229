@@ -20,12 +20,15 @@ CmdView::CmdView()
  * @modified 04/13/2014 **/
 int CmdView::draw(GameBoard game, string name, GridDimension terrain, GridDimension window)
 {
-    int x_size = (window.getXHigh() - window.getXLow() + 1);
-    int y_size = (window.getYHigh() - window.getYLow() + 1);
+    int x_orig = window.getXLow() - terrain.getXLow();
+    int y_orig = window.getYLow() - terrain.getYLow();
 
-    for(int i = y_size - 1; i > -1; i--)
+    int x_size = (window.getXHigh() - window.getXLow() + 1 + x_orig);
+    int y_size = (window.getYHigh() - window.getYLow() + 1 + y_orig);
+
+    for(int i = y_size - 1; i > y_orig - 1; i--)
     {
-        for(int j = 0; j < x_size; j++)
+        for(int j = x_orig; j < x_size; j++)
         {
             if(game.getCell(j, i).isAlive())
                 cout << alive;

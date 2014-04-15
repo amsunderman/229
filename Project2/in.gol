@@ -7,8 +7,6 @@ Life =
 
 	Terrain = {Xrange = -6..6; Yrange = -3..3;};
 
-    #Window = {Xrange = -20..20; Yrange = -20..20;};
-
 	# Use the same window as the terrain
 	#i.e., view everything
 
