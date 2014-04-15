@@ -50,8 +50,8 @@ Simulation::Simulation(string GOL_in, View * out, bool override_tx, bool overrid
     }
     if(override_wy)
     {
-        window.setYLow(wxLow);
-        window.setYHigh(wxHigh);
+        window.setYLow(wyLow);
+        window.setYHigh(wyHigh);
     }
     this->GOL_in = GOL_in;
     this->override_tx = override_tx;
@@ -297,10 +297,15 @@ int Simulation::readGOLFile()
                     }
                 }
 
-                if((window.getXLow() < terrain.getXLow()) || (window.getXHigh() > terrain.getXHigh()) ||
-                    (window.getYLow() < terrain.getYLow()) || (window.getYHigh() > terrain.getYHigh()))
+                if((window.getXLow() < terrain.getXLow()) || (window.getXHigh() > terrain.getXHigh()))
                 {
-                    this->window = this->terrain;
+                    window.setXLow(terrain.getXLow());
+                    window.setXHigh(terrain.getXHigh());
+                }
+                if((window.getYLow() < terrain.getYLow()) || (window.getYHigh() > terrain.getYHigh()))
+                {
+                    window.setYLow(terrain.getYLow());
+                    window.setYHigh(terrain.getYHigh());
                 }
 
                 delete fin;
