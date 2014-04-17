@@ -116,6 +116,7 @@ int main(int argc, char ** argv)
             // help command line switch
             if(current_argument == "-h")
             {
+                // output help about life rules and description
                 cout << endl << "life program: simulates the game of life with the following rules:" << endl;
                 cout << "1: if cell is alive in generation i, then: " << endl;
                 cout << "\t(a) loneliness rule: if there are fewer then two alive neighbors, cell will be " <<
@@ -129,6 +130,46 @@ int main(int argc, char ** argv)
                     "generation i + 1" << endl;
                 cout << "\t(b) If any other number of alive neighbors exist, cell will remain dead in generation " <<
                     "i + 1" << endl << endl;
+
+                cout << "Usage:" << endl;
+                cout << "program requires a .gol file as input. This can be provided either as a command line " <<
+                    "argument or be read from stdin. The game of life format closely follows the JSON format. " <<
+                    "An example is provided in life's directory named \"help.gol\". You can use this file to " <<
+                    "specify the name of the simulation, specify terrain and window ranges, set the display " <<
+                    "character and color of game grid output, and set the initial alive or dead coordinates." <<
+                    "The program accepts modifitions in the form of command line switches." << endl << endl;
+
+                // output help specific to lifegui
+                #ifdef GUI
+                cout << "command line switches:" << endl;
+                cout << "-g n: n specifies the desired output generation number" << endl;
+                cout << "-s n: n specifies the desired pixel size of the gui cells" << endl;
+                cout << "-h: displays program help screen" << endl;
+                cout << "-tx L..H: override terrain x range L is low and H is high" << endl;
+                cout << "-ty L..H: override terrain y range L is low and H is high" << endl;
+                cout << "-wx L..H: override window x range L is low and H is high" << endl;
+                cout << "-wy L..H: override window y range L is low and H is high" << endl << endl;
+
+                cout << "output will be in the form of a qt graphical user interface." << endl << endl;
+
+                // output help specific to life
+                #else
+                cout << "command line switches:" << endl;
+                cout << "-f: Output will be in the form of a gol file" << endl;
+                cout << "-g n: n specifies the desired output generation number" << endl;
+                cout << "-h: displays program help screen" << endl;
+                cout << "-tx L..H: override terrain x range L is low and H is high" << endl;
+                cout << "-ty L..H: override terrain y range L is low and H is high" << endl;
+                cout << "-v: output will be an ascii display on the command line" << endl;
+                cout << "-wx L..H: override window x range L is low and H is high" << endl;
+                cout << "-wy L..H: override window y range L is low and H is high" << endl << endl;
+
+                cout << "output will be in the form either a gol file or command line visualization of the game " <<
+                    "grid based off of the command line switches listed above." << endl << endl;
+
+                #endif
+
+                // return successfully
                 return 0;
             }
 

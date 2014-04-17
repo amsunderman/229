@@ -20,12 +20,15 @@ CmdView::CmdView()
  * @modified 04/13/2014 **/
 int CmdView::draw(GameBoard game, string name, GridDimension terrain, GridDimension window)
 {
+    // offset window's 0 to start at correct terrain coordinate
     int x_orig = window.getXLow() - terrain.getXLow();
     int y_orig = window.getYLow() - terrain.getYLow();
 
+    // calculate window size
     int x_size = (window.getXHigh() - window.getXLow() + 1 + x_orig);
     int y_size = (window.getYHigh() - window.getYLow() + 1 + y_orig);
 
+    // loop through relevant grid cells to output to screen with specified properties
     for(int i = y_size - 1; i > y_orig - 1; i--)
     {
         for(int j = x_orig; j < x_size; j++)
@@ -38,5 +41,6 @@ int CmdView::draw(GameBoard game, string name, GridDimension terrain, GridDimens
         cout << endl;
     }
 
+    // return successfully
     return 0;
 }
